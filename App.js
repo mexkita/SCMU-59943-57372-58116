@@ -6,6 +6,7 @@ import Details from './screens/Details';
 import React, { useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
+import { useFonts } from 'expo-font';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,9 @@ function InsideLayout() {
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [fontsLoaded] = useFonts({
+    'League Spartan': require('./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf'),
+  });
 
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {

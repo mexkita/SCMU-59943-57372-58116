@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import LOGO from "./../assets/ParKingLogo.png";
 
 const Login = () => {
 
@@ -40,17 +41,23 @@ const Login = () => {
 
     return (
         <View style={styles.container}>
-            <KeyboardAvoidingView behavior='padding'>
-                <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
+            <View style={styles.logoContainer}>
+                <Image style={styles.logo} source={LOGO} />
+            </View>
+            <Text style={styles.pageName}>Login</Text>
+            <KeyboardAvoidingView behavior='padding' style={styles.keyboardAvoidingView}>
+                
+                    <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
                 <TextInput secureTextEntry={true} value={password} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
 
                 {loading ? <ActivityIndicator size="large" color="#0000ff" />
                     : (
                         <>
-                            <Button title="Login" onPress={signIn} />
+                            <Button title="Login" onPress={signIn} style={styles.button}/>
                             <Button title="Create Account" onPress={signUp} />
                         </>
-                    )}
+                    )
+                }
             </KeyboardAvoidingView>
         </View>
     )
@@ -60,9 +67,30 @@ export default Login
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 20,
+        backgroundColor: "#292929",
+        paddingHorizontal: 20,
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+    logoContainer: {
+        alignItems: 'center',
+    },
+    logo: {
+        marginBottom: 80,
+    },
+    pageName: {
+        fontSize: 40,
+        fontFamily: 'League Spartan',
+        fontWeight: '600',
+        color: '#fff',
+        alignSelf: 'flex-start'
+    },
+    keyboardAvoidingView: {
+        borderWidth: 1, 
+        borderColor: '#0f0', 
+        width: '100%'
     },
     input: {
         marginVertical: 4,
@@ -72,4 +100,7 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#fff',
     },
+    button: {
+        borderRadius: 5,
+    }
 })
