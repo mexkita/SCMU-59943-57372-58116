@@ -4,7 +4,7 @@ import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { CustomButton } from '../components/CostumButton';
 import LOGO from "./../assets/ParKingLogo.png";
-import colors from './../assets/colors/colors';
+import colors from '../assets/colors/colors';
 
 const Register = ({ navigation }) => {
 
