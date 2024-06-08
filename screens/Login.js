@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView, ScrollView, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { CustomButton } from '../components/CostumButton';
+import LOGO from "./../assets/ParKingLogo.png";
+import colors from './../assets/colors/colors';
 
-const Login = () => {
+const Login = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -39,20 +42,29 @@ const Login = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView behavior='padding'>
-                <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
-                <TextInput secureTextEntry={true} value={password} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
+        <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView behavior='padding' style={styles.keyboardAvoidingView}>
+                <ScrollView style={styles.scrollView}>
+                    <Image style={styles.logo} source={LOGO} />
+                    <Text style={styles.pageName}>Login</Text>
+                        
+                    <TextInput value={email} style={styles.input} placeholderTextColor={colors.white} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
+                    <TextInput secureTextEntry={true} value={password} placeholderTextColor='white' style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
 
-                {loading ? <ActivityIndicator size="large" color="#0000ff" />
-                    : (
-                        <>
-                            <Button title="Login" onPress={signIn} />
-                            <Button title="Create Account" onPress={signUp} />
-                        </>
-                    )}
+                    <View style={styles.buttonView}>
+                        {loading ? <ActivityIndicator size="large" color={colors.orange} />
+                            : (
+                                <CustomButton title="Login" onPressFunction={signIn} color={colors.orange}/>    
+                            )
+                        }
+                    </View>
+                    <View style={styles.createAccountView}>
+                        <Text style={{color: colors.greyText}}>Not a member? </Text>
+                        <Text style={{color: colors.white, textDecorationLine: 'underline'}} onPress={() => navigation.navigate('Register')}>Create an account!</Text>
+                    </View>
+                </ScrollView>
             </KeyboardAvoidingView>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -60,16 +72,50 @@ export default Login
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 20,
+        backgroundColor: colors.background,
+        paddingHorizontal: 20,
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 40,
+    },
+    scrollView: {
+        width:"100%"
+    },
+    logo: {
+        alignSelf:'center',
+        marginBottom: 120,
+        marginTop: 50,
+    },
+    pageName: {
+        fontSize: 40,
+        fontFamily: 'League Spartan',
+        fontWeight: '600',
+        color: colors.white,
+        alignSelf: 'flex-start',
+        paddingBottom: 30
+    },
+    keyboardAvoidingView: {
+        height: '100%',
+        width: '100%'
     },
     input: {
-        marginVertical: 4,
+        marginVertical: 10,
         height: 50,
         borderWidth: 1,
-        borderRadius: 4,
+        borderRadius: 10,
+        borderColor: colors.orange,
         padding: 10,
-        backgroundColor: '#fff',
+        backgroundColor: colors.background,
+        color: colors.white,
     },
+    buttonView: {
+        paddingTop: 40
+    },
+    createAccountView: {
+        justifyContent:"center",
+        flexDirection:"row",
+        marginVertical: 10
+        
+    }
 })

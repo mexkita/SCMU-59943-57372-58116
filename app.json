@@ -22,6 +22,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf"
+          ]
+        }
+      ]
+    ]
   }
 }
