@@ -5,4 +5,5 @@ export default {
     greyText: '#878787',
     white: '#ffffff',
     black: '#000000',
+    grey: '#404040'
   };
