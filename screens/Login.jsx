@@ -48,8 +48,8 @@ const Login = ({ navigation }) => {
                     <Image style={styles.logo} source={LOGO} />
                     <Text style={styles.pageName}>Login</Text>
                         
-                    <TextInput value={email} style={styles.input} placeholderTextColor={colors.white} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
-                    <TextInput secureTextEntry={true} value={password} placeholderTextColor='white' style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
+                    <TextInput value={email} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
+                    <TextInput secureTextEntry={true} value={password} placeholderTextColor={colors.greyText} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
 
                     <View style={styles.buttonView}>
                         {loading ? <ActivityIndicator size="large" color={colors.orange} />
@@ -73,7 +73,7 @@ export default Login
 const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
-        paddingHorizontal: 20,
+        paddingHorizontal: 30,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     createAccountView: {
         justifyContent:"center",
         flexDirection:"row",
-        marginVertical: 10
+        marginVertical: 30
         
     }
 })

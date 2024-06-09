@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login'
 import Register from './screens/Register'
+import HomePage from './screens/HomePage'
 import List from './screens/List';
 import Details from './screens/Details';
 import React, { useEffect, useState } from 'react';
@@ -38,13 +39,14 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="HomePage">
         {user ? (
           <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown: false }} />
         ) : (
           <>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
           </>
         )}
       </Stack.Navigator>
