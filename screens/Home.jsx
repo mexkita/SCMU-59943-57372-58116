@@ -3,13 +3,20 @@ import colors from '../assets/colors/colors';
 import { Header } from "../components/Header";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { CustomButton } from '../components/CostumButton';
+import { BookingsCard } from "../components/BookingsCard";
+import { HomeButtons } from "../components/HomeButtons";
+import { useNavigation } from "@react-navigation/native";
 
+const Home = () => {
 
-const HomePage = ({ navigation }) => {
-
+    const navigation = useNavigation();
 
     const startParking =  () => {
 
+    }
+
+    const handleNavigation =  (pageName) => {
+        navigation.navigate(pageName);
     }
 
 
@@ -27,15 +34,15 @@ return(
             <CustomButton title="Start Parking" onPressFunction={startParking} color={colors.orange}/> 
             <View style={styles.menuContainer}>
                 <Text style={styles.menuSubtitle}>Bookings</Text>
-                    <TouchableOpacity
-                        onPress={'onPressFunction'}
-                        style={({ ...styles.button, backgroundColor: colors.grey })  }
-                    >
-                        <View style={styles.contents}>
-                        <Text style={styles.buttonText }>{'title'}</Text>
-                        </View>
-
-                     </TouchableOpacity>
+                    <BookingsCard/>
+            </View>
+            <View style={styles.menuContainer}>
+                <Text style={styles.menuSubtitle}>Utilities</Text>
+                    <HomeButtons title={'Search for parking lots'} icon={'map-marker-outline'} onPressFunction={() => handleNavigation('SearchParking')}/>
+                    <HomeButtons title={'Book Parking spot'} icon={'bookmark-outline'} onPressFunction={''}/>
+                    <HomeButtons title={'Checkout'} icon={'wallet-outline'} onPressFunction={''}/>
+                    <HomeButtons title={'Help'} icon={'help-circle-outline'} onPressFunction={''}/>
+                    
             </View>
          </View>
         
@@ -45,38 +52,9 @@ return(
 );
 }
 
-export default HomePage;
+export default Home;
 
 const styles = StyleSheet.create({
-    button: {
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 2,
-        paddingHorizontal: 10,
-        shadowColor: "black",
-        shadowOffset: {
-            height: 3,
-            width: 0,
-        },
-        shadowOpacity: 1.25,
-        elevation: 3,
-        height: 50,
-    },
-    contents:
-    {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-
-    buttonText: {
-        textAlign: "center",
-        color: colors.white,
-        fontSize: 20,
-        paddingVertical: 5,
-        fontWeight: "semibold",
-    },
 
     container: {
         backgroundColor: colors.background,
@@ -86,14 +64,14 @@ const styles = StyleSheet.create({
     },
 
     scrollView: {
-        width:"100%"
+        width:"100%",
+       
     },
 
     logo: {
         width: 116,
         height: 51,
-      
-      
+    
     },
     header : {
         width: "100%" ,
@@ -118,6 +96,7 @@ const styles = StyleSheet.create({
         fontWeight: 'regular',
         color: colors.white,
         alignSelf: 'flex-start',
+        paddingBottom: 20,
     },
     titleContainer : {
         width: "100%" ,
@@ -132,6 +111,7 @@ const styles = StyleSheet.create({
     menuContainer: {
         marginTop: 35,
         flex: 1
-    }
+    },
+   
     
 })
