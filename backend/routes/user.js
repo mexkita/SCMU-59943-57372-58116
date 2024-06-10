@@ -16,7 +16,11 @@ router.get(userAPI, user.getAll);
 
 router.put(userAPI + "/:idU", user.updateUser);
 
+router.get(userAPI + "/reservation/:userId", user.getUserReservation);
 
+router.put(userAPI + "/finish_stay/:userId", user.finishStay);
+
+router.post(userAPI + "/start_stay/:userId/parks/:parkId", user.startStay);
 
 
 module.exports = router;

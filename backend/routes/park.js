@@ -1,4 +1,5 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMW");
 
 const router = express.Router();
 
@@ -8,9 +9,11 @@ const parkAPI = "/park";
 
 router.put(parkAPI + "/:idU", park.updateSpotStatus);
 
-router.get(parkAPI + "/available_spots/:parkId", park.availableSpots)
+router.get(parkAPI, park.getAll);
 
-router.get(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot)
+router.get(parkAPI + "/available_spots/:parkId", park.availableSpots);
+
+router.get(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot);
 
 
 
