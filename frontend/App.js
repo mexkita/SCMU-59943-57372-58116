@@ -2,12 +2,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login'
 import Register from './screens/Register'
-import HomePage from './screens/HomePage'
 import BookParkingSpot from './screens/BookParkingSpot'
+import Home from './screens/Home'
 import React, { useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
 import { useFonts } from 'expo-font';
+import SearchParking from './screens/SearchParking';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,9 +16,10 @@ const InsideStack = createNativeStackNavigator();
 
 function InsideLayout() {
   return (
-    <InsideStack.Navigator initialRouteName="BookParkingSpot">
-      <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
+    <InsideStack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 

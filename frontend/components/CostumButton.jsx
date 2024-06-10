@@ -12,6 +12,9 @@ const CustomButton = ({ title, onPressFunction, color }) => {
       <View style={styles.contents}>
         <Text style={styles.buttonText}>{title}</Text>
       </View>
+
+
+
     </TouchableOpacity>
   )
 }
