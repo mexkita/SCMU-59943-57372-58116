@@ -11,31 +11,78 @@ import { Picker } from '@react-native-picker/picker';
 const BookParkingSpot = () => {
     const navigation = useNavigation();
 
-    const [date, setDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [selectedParkingLot, setParkingLot] = useState();
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
+    const onChangeStartDate = (event, selectedDate) => {
+        const currentDate = selectedDate || startDate;
+        setStartDate(currentDate);
+        if (selectedDate > endDate || !endDate)
+            setEndDate(currentDate);
     };
 
-    const showMode = (currentMode) => {
+    const onChangeEndDate = (event, selectedDate) => {
+        const currentDate = selectedDate || endDate; // Updated
+        if (selectedDate >= startDate || !startDate) // Updated condition
+            setEndDate(currentDate);
+    };
+
+    const showMode = (currentMode, isStart) => {
+        if (isStart) {
+            DateTimePickerAndroid.open({
+                value: startDate,
+                onChangeStartDate,
+                mode: currentMode,
+                is24Hour: true,
+                display: "spinner",
+            });
+        } else {
+            DateTimePickerAndroid.open({
+                value: endDate,
+                onChangeEndDate,
+                mode: currentMode,
+                is24Hour: true,
+                display: "spinner",
+            });
+        }
+
+    };
+
+    const handleChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || startDate;
+        setStartDate(currentDate);
+        setEndDate(currentDate);
+    }
+
+    const showDatepicker = () => {
+        const mode = 'date';
         DateTimePickerAndroid.open({
-            value: date,
-            onChange,
-            mode: currentMode,
+            value: startDate,
+            onChange: handleChangeDate,
+            mode,
             is24Hour: true,
             display: "spinner",
         });
     };
 
-    const showDatepicker = () => {
-        showMode('date');
+    const showTimepicker = (isStart) => {
+        const mode = 'time';
+        const callback = isStart ? onChangeStartDate : onChangeEndDate;
+        const value = isStart ? startDate : endDate;
+        DateTimePickerAndroid.open({
+            value,
+            onChange: callback,
+            mode,
+            is24Hour: true,
+            display: "spinner",
+        });
     };
 
-    const showTimepicker = () => {
-        showMode('time');
-    };
+    const printDatesDebug = () => {
+        console.log("------------- start date: " + startDate);
+        console.log("------------- end date: " + endDate);
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -60,14 +107,14 @@ const BookParkingSpot = () => {
                         </Picker>
                     </View>
 
-                    <InputPicker title="Date" auxFunction={showDatepicker} date={date} />
+                    <InputPicker title="Date" auxFunction={showDatepicker} date={startDate} />
                     <View style={styles.startAndEndTimeView}>
-                        <InputPicker title="Start Time" auxFunction={showTimepicker} date={date} />
-                        <InputPicker title="End Time" auxFunction={showTimepicker} date={date} />
+                        <InputPicker title="Start Time" auxFunction={() => showTimepicker(true)} date={startDate} />
+                        <InputPicker title="End Time" auxFunction={() => showTimepicker(false)} date={endDate} />
                     </View>
                     <View style={styles.bookButtonView}>
                         {/* TODOOOOO connect to firebase */}
-                        <CustomButton title="Book Spot" onPressFunction={null} color={colors.orange} />
+                        <CustomButton title="Book Spot" onPressFunction={printDatesDebug} color={colors.orange} />
                     </View>
                 </View>
             </ScrollView>
