@@ -147,9 +147,27 @@ exports.getUserReservation = async (req, res) => {
     const userRef = db.collection('users').doc(userId);
     const user = await userRef.get();
 
+    if (!user.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    if (user.data().reservation == undefined) {
+      return res.status(409).json({ message: "User does not have a reservation!" })
+    }
 
-    res.status(200).json(user.data().reservation);
+    const reservation_data = user.data().reservation;
+
+    const parkRef = db.collection('parks').doc(reservation_data.parkId);
+    const park = await parkRef.get();
+
+    let response = {
+      start_date: reservation_data.start_date,
+      end_date: reservation_data.end_date,
+      parkId: reservation_data.parkId,
+      title: park.data().title,
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
