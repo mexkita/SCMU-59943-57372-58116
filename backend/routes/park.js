@@ -13,7 +13,9 @@ router.get(parkAPI, park.getAll);
 
 router.get(parkAPI + "/available_spots/:parkId", park.availableSpots);
 
-router.get(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot);
+router.post(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot);
+
+router.post(parkAPI + "/report/:parkId", park.createReport);
 
 
 

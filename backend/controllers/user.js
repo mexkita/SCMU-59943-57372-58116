@@ -288,3 +288,43 @@ exports.startStay = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.getElapsed = async (req, res) => {
+  try {
+    //Validate the request params
+    const { paramError } = Joi.string().validate(req.params.userId);
+
+    if (paramError) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const userId = req.params.userId;
+    const userRef = db.collection('users').doc(userId);
+    const user = await userRef.get();
+
+    if (!user.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.data().current_stay == undefined) {
+      return res.status(409).json({ message: "User does not have a stay!" })
+    }
+
+    const current_stay_data = user.data().current_stay;
+
+    const start_time = new Date(Date.parse(current_stay_data.start_date));
+
+    const elapsedTime = Date.now() - start_time;
+
+    const formattedElapsed = millisToTime(elapsedTime);
+
+    let response = {
+      elapsed: formattedElapsed
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

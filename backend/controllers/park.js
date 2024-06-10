@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const { db } = require("../firebase_config");
-const { collection, addDoc } = require('firebase/firestore');
+const { v4: uuidv4 } = require('uuid');
 const { FieldValue } = require("firebase-admin/firestore");
 
 const updateSpotStatusSchema = Joi.object({
@@ -160,6 +160,46 @@ exports.getAll = async (req, res) => {
         console.log(parksListAux)
 
         res.status(200).json(parksListAux);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+const createReportSchema = Joi.object({
+    message: Joi.string().required()
+});
+
+exports.createReport = async (req, res) => {
+    try {
+        //Validate the request params
+        const { paramError } = Joi.string().validate(req.params.parkId);
+
+        // validate the request body using Joi
+        const { error } = createReportSchema.validate(req.body);
+
+
+        if (error || paramError) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const data = req.body;
+
+        // find user by ID in the database
+        const parkRef = db.collection('parks').doc(req.params.parkId);
+        const park = await parkRef.get();
+
+        if (!park.exists) {
+            return res.status(404).json({ message: "Park not found" });
+        }
+
+        const addReport = await parkRef.update({
+            reports: FieldValue.arrayUnion({ reportId: uuidv4(), message: data.message })
+        })
+
+        console.log(addReport)
+
+        res.status(200).json({ message: "Report created" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server Error" });
