@@ -4,37 +4,85 @@ import { useNavigation } from '@react-navigation/native';
 import colors from '../assets/colors/colors';
 import Header from "../components/Header";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
+import { Picker } from '@react-native-picker/picker';
 
 const BookParkingSpot = () => {
     const navigation = useNavigation();
 
-    const [date, setDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [selectedParkingLot, setParkingLot] = useState();
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
+    const onChangeStartDate = (event, selectedDate) => {
+        const currentDate = selectedDate || startDate;
+        setStartDate(currentDate);
+        if (selectedDate > endDate || !endDate)
+            setEndDate(currentDate);
     };
 
-    const showMode = (currentMode) => {
+    const onChangeEndDate = (event, selectedDate) => {
+        const currentDate = selectedDate || endDate; // Updated
+        if (selectedDate >= startDate || !startDate) // Updated condition
+            setEndDate(currentDate);
+    };
+
+    const showMode = (currentMode, isStart) => {
+        if (isStart) {
+            DateTimePickerAndroid.open({
+                value: startDate,
+                onChangeStartDate,
+                mode: currentMode,
+                is24Hour: true,
+                display: "spinner",
+            });
+        } else {
+            DateTimePickerAndroid.open({
+                value: endDate,
+                onChangeEndDate,
+                mode: currentMode,
+                is24Hour: true,
+                display: "spinner",
+            });
+        }
+
+    };
+
+    const handleChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || startDate;
+        setStartDate(currentDate);
+        setEndDate(currentDate);
+    }
+
+    const showDatepicker = () => {
+        const mode = 'date';
         DateTimePickerAndroid.open({
-            value: date,
-            onChange,
-            mode: currentMode,
+            value: startDate,
+            onChange: handleChangeDate,
+            mode,
             is24Hour: true,
             display: "spinner",
         });
     };
 
-    const showDatepicker = () => {
-        showMode('date');
+    const showTimepicker = (isStart) => {
+        const mode = 'time';
+        const callback = isStart ? onChangeStartDate : onChangeEndDate;
+        const value = isStart ? startDate : endDate;
+        DateTimePickerAndroid.open({
+            value,
+            onChange: callback,
+            mode,
+            is24Hour: true,
+            display: "spinner",
+        });
     };
 
-    const showTimepicker = () => {
-        showMode('time');
-    };
+    const printDatesDebug = () => {
+        console.log("------------- start date: " + startDate);
+        console.log("------------- end date: " + endDate);
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -42,14 +90,31 @@ const BookParkingSpot = () => {
                 <Header />
                 <View style={styles.pageGlobalView}>
                     <Text style={styles.pageTitle}>Book Parking Spot</Text>
-                    <InputPicker title="Parking Lot" auxFunction={showTimepicker} date={date} />
-                    <InputPicker title="Date" auxFunction={showDatepicker} date={date} />
+                    <Text style={styles.parkingLotTitle}>Parking Lot</Text>
+                    <View style={styles.parkingLotPickerView}>
+                        <Picker
+                            selectedValue={selectedParkingLot}
+                            style={styles.parkingLotPicker}
+                            dropdownIconColor={colors.greyText}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setParkingLot(itemValue)
+                            }>
+                            {/* TODOOOOO list parking lots from backend */}
+                            <Picker.Item label="FCT Lidl" value="fct lidl" />
+                            <Picker.Item label="FCT Dep" value="fct dep" />
+                            <Picker.Item label="FCT main avenue" value="fct main" />
+                            <Picker.Item label="FCT DI" value="fct di" />
+                        </Picker>
+                    </View>
+
+                    <InputPicker title="Date" auxFunction={showDatepicker} date={startDate} />
                     <View style={styles.startAndEndTimeView}>
-                        <InputPicker title="Start Time" auxFunction={showTimepicker} date={date} />
-                        <InputPicker title="End Time" auxFunction={showTimepicker} date={date} />
+                        <InputPicker title="Start Time" auxFunction={() => showTimepicker(true)} date={startDate} />
+                        <InputPicker title="End Time" auxFunction={() => showTimepicker(false)} date={endDate} />
                     </View>
                     <View style={styles.bookButtonView}>
-                        <CustomButton title="Book Spot" onPressFunction={{}} color={colors.orange} />
+                        {/* TODOOOOO connect to firebase */}
+                        <CustomButton title="Book Spot" onPressFunction={printDatesDebug} color={colors.orange} />
                     </View>
                 </View>
             </ScrollView>
@@ -80,6 +145,23 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         alignSelf: "center",
         marginBottom: 30,
+    },
+    parkingLotTitle: {
+        color: colors.white,
+        marginLeft: 8,
+        marginBottom: 8,
+        fontSize: 18
+    },
+    parkingLotPickerView: {
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: colors.greyText,
+        margin: 5,
+        justifyContent: 'center',
+    },
+    parkingLotPicker: {
+        color: colors.secondaryText,
+        height: 50,
     },
     startAndEndTimeView: {
         display: "flex",
