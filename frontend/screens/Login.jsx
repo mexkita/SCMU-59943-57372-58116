@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         width: 165,
         height: 73,
+       
     },
     pageName: {
         fontSize: 40,

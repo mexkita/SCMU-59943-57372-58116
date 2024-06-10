@@ -12,7 +12,7 @@ const BookParkingSpot = ({route}) => {
     const navigation = useNavigation();
     const {park} = route.params || {};
 
-    
+  
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [selectedParkingLot, setParkingLot] = useState(park ? park.title: '');
@@ -133,7 +133,7 @@ const BookParkingSpot = ({route}) => {
                           
                             parkingLots.map((park) =>(
                                 
-                                <Picker.Item label={park.title} value={park.id} />
+                                <Picker.Item key={park.id} label={park.title} value={park.title} />
                                 
 
                             ))

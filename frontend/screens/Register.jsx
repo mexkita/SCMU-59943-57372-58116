@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 120,
         marginTop: 50,
+       
     },
     pageName: {
         fontSize: 40,
