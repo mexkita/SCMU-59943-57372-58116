@@ -1,6 +1,16 @@
 const Joi = require("joi");
 const { db } = require("../firebase_config");
 const { collection, addDoc } = require('firebase/firestore');
+const { FieldValue } = require("firebase-admin/firestore");
+
+function millisToTime(millis) {
+  const date = new Date(millis);
+  const hours = date.getUTCHours().toString().padStart(2, '0');
+  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+  const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 const createUserSchema = Joi.object({
   username: Joi.string().required(),
@@ -174,4 +184,107 @@ exports.getUserReservation = async (req, res) => {
   }
 };
 
+exports.finishStay = async (req, res) => {
+  try {
+    //Validate the request params
+    const { paramError } = Joi.string().validate(req.params.userId);
 
+    if (paramError) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const userId = req.params.userId;
+    const userRef = db.collection('users').doc(userId);
+    const user = await userRef.get();
+
+    if (!user.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.data().current_stay == undefined) {
+      return res.status(409).json({ message: "User does not have a stay!" })
+    }
+
+    const current_stay_data = user.data().current_stay;
+
+    const parkRef = db.collection('parks').doc(current_stay_data.parkId);
+    const park = await parkRef.get();
+
+    const start_time = new Date(Date.parse(current_stay_data.start_date));
+
+    console.log(start_time)
+
+    const elapsedTime = Date.now() - start_time;
+
+    console.log(elapsedTime)
+
+    const formattedElapsed = millisToTime(elapsedTime);
+
+    console.log(formattedElapsed);
+
+    const total_value = (elapsedTime * 0.7) / 3600000;
+
+
+    let response = {
+      total_time: formattedElapsed,
+      total_price: total_value.toFixed(2)
+    }
+
+    await userRef.update({
+      current_stay: FieldValue.delete()
+    });
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.startStay = async (req, res) => {
+  try {
+    //Validate the request params
+    const { paramError } = Joi.string().validate(req.params);
+
+    if (paramError) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const userId = req.params.userId;
+    const userRef = db.collection('users').doc(userId);
+    const user = await userRef.get();
+
+    if (!user.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.data().current_stay != undefined) {
+      return res.status(409).json({ message: "User already has a stay!" })
+    }
+
+    const parkId = req.params.parkId;
+    const parkRef = db.collection('parks').doc(parkId);
+    const park = await parkRef.get();
+
+    if (!park.exists) {
+      return res.status(404).json({ message: "Park not found" });
+    }
+
+    const timestamp = new Date(Date.now())
+
+
+
+    let response = {
+      start_date: timestamp.toISOString(),
+      parkId: park.id
+    }
+
+    await userRef.update({ current_stay: response });
+
+
+    res.status(200).json({ message: "Stay started!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
