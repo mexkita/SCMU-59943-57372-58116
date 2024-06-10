@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login'
 import Register from './screens/Register'
+import BookParkingSpot from './screens/BookParkingSpot'
 import Home from './screens/Home'
 import React, { useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
@@ -15,8 +16,10 @@ const InsideStack = createNativeStackNavigator();
 
 function InsideLayout() {
   return (
-    <InsideStack.Navigator>
+    <InsideStack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <Stack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 
@@ -38,15 +41,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
         {user ? (
           <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown: false }} />
         ) : (
           <>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
           </>
         )}
       </Stack.Navigator>
