@@ -22,7 +22,11 @@ const server = app.listen(PORT, () => {
 // Use your routes after the server starts
 const userRoutes = require('./routes/user');
 
+const parkRoutes = require('./routes/park');
+
 app.use('/api', userRoutes);
+
+app.use('/api', parkRoutes);
 
 
 
