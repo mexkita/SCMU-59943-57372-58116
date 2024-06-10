@@ -8,6 +8,8 @@ const parkAPI = "/park";
 
 router.put(parkAPI + "/:idU", park.updateSpotStatus);
 
+router.get(parkAPI, park.getAll);
+
 router.get(parkAPI + "/available_spots/:parkId", park.availableSpots)
 
 router.get(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot)

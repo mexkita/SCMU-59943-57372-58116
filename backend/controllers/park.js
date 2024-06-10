@@ -140,3 +140,28 @@ exports.bookSpot = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+exports.getAll = async (req, res) => {
+    try {
+        const parksRef = await db.collection('parks').listDocuments();
+
+        let parksListAux = [];
+
+        const promises = parksRef.map(docRef =>
+            docRef.get().then(element => {
+                let data = element.data();
+                data.parkId = element.id;
+                parksListAux.push(data);
+            })
+        );
+
+        await Promise.all(promises);
+
+        console.log(parksListAux)
+
+        res.status(200).json(parksListAux);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
