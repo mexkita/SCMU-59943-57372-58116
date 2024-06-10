@@ -44,8 +44,8 @@ const Home = () => {
                         <Text style={styles.menuSubtitle}>Utilities</Text>
                         <HomeButtons title={'Search for parking lots'} icon={'map-marker-outline'} onPressFunction={() => handleNavigation('SearchParking')} />
                         <HomeButtons title={'Book Parking spot'} icon={'bookmark-outline'} onPressFunction={() => handleNavigation('BookParkingSpot')} />
-                        <HomeButtons title={'Checkout'} icon={'wallet-outline'} onPressFunction={''} />
-                        <HomeButtons title={'Help'} icon={'help-circle-outline'} onPressFunction={''} />
+                        <HomeButtons title={'Checkout'} icon={'wallet-outline'} onPressFunction={() => handleNavigation('Checkout')} />
+                        <HomeButtons title={'Help'} icon={'help-circle-outline'} onPressFunction={() => handleNavigation('Help')} />
 
                     </View>
                 </View>

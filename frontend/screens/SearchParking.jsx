@@ -34,7 +34,9 @@ const SearchParking = () => {
         setSearch(search);
     };
   
-
+const handleBooking = () =>{
+    setBottomSheetVisible(false)
+}
 
 
     const markers = [
@@ -138,7 +140,7 @@ const SearchParking = () => {
                                 </View>
                             </>
                         )}
-                        <CustomButton title={'Book'} onPressFunction={() => setBottomSheetVisible(false)} color={colors.orange}/>
+                        <CustomButton title={'Book'} onPressFunction={() => handleBooking()} color={colors.orange}/>
                        
                     </View>
                     </TouchableWithoutFeedback>

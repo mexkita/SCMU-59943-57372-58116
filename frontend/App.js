@@ -10,6 +10,8 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
 import { useFonts } from 'expo-font';
 import SearchParking from './screens/SearchParking';
+import Help from './screens/Help';
+import Checkout from './screens/Checkout';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +24,8 @@ function InsideLayout() {
       <InsideStack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
       <InsideStack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
       <InsideStack.Screen name="NFCTicket" component={NFCTicket} options={{ headerShown: false }} />
+      <InsideStack.Screen name="Help" component={Help} options={{ headerShown: false }} />
+      <InsideStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 
