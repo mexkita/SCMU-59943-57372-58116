@@ -8,12 +8,15 @@ import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
 import { Picker } from '@react-native-picker/picker';
 
-const BookParkingSpot = () => {
+const BookParkingSpot = ({route}) => {
     const navigation = useNavigation();
+    const {park} = route.params || {};
 
+  
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [selectedParkingLot, setParkingLot] = useState();
+    const [selectedParkingLot, setParkingLot] = useState(park ? park.title: '');
+
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || startDate;
@@ -84,6 +87,31 @@ const BookParkingSpot = () => {
         console.log("------------- end date: " + endDate);
     }
 
+
+    
+    const parkingLots = [
+        {
+            id: 0,
+            latitude: 38.72249845287284,
+            longitude: -9.137780372648901 ,
+            title: 'Parking Lot x',
+            totalSlots: 200,
+            availableSlots: 100,
+            pricePerHour: '0.5'
+
+        },
+        {
+            id: 1,
+            latitude: 38.66192985095062, 
+            longitude: -9.205607571001307 ,
+            title: 'Parking Lot FCT',
+            totalSlots: 200,
+            availableSlots: 150,
+            pricePerHour: '0.7'
+
+        }
+    ]
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
@@ -99,11 +127,19 @@ const BookParkingSpot = () => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setParkingLot(itemValue)
                             }>
-                            {/* TODOOOOO list parking lots from backend */}
-                            <Picker.Item label="FCT Lidl" value="fct lidl" />
-                            <Picker.Item label="FCT Dep" value="fct dep" />
-                            <Picker.Item label="FCT main avenue" value="fct main" />
-                            <Picker.Item label="FCT DI" value="fct di" />
+                               
+                            {/* TODOOOOO list parking lots from backend */
+
+                          
+                            parkingLots.map((park) =>(
+                                
+                                <Picker.Item key={park.id} label={park.title} value={park.title} />
+                                
+
+                            ))
+                            
+                            }
+                           
                         </Picker>
                     </View>
 

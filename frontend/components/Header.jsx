@@ -1,11 +1,21 @@
 import { Image, StyleSheet, View } from "react-native";
-import LOGO from "../assets/ParKingLogo.png"
 import { FontAwesome } from '@expo/vector-icons';
+import LOGO from '../assets/logo.png'
+import colors from "../assets/colors/colors";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = () => {
+
+const navigation = useNavigation();
+
+   const handleUserProfile = () =>{
+        navigation.navigate('UserSpace');
+   }
+
+
     return (<View style={styles.header}>
         <Image style={styles.logo} source={LOGO} />
-        <FontAwesome name="user-circle" size={24} color="white" />
+        <FontAwesome name="user-circle" size={30} color="white" onPress={handleUserProfile}/>
     </View>)
 
 }
@@ -21,10 +31,11 @@ const styles = StyleSheet.create({
     },
     header: {
         width: "100%",
-        flex: 1,
+        display: "flex",
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+       
 
     },
 

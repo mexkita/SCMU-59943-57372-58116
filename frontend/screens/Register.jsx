@@ -2,8 +2,8 @@ import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, KeyboardAv
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { CustomButton } from '../components/CustomButton';
-import LOGO from "./../assets/ParKingLogo.png";
+import CustomButton  from '../components/CustomButton';
+import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
 
 const Register = ({ navigation }) => {
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 120,
         marginTop: 50,
+       
     },
     pageName: {
         fontSize: 40,

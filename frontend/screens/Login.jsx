@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import CustomButton from '../components/CustomButton';
-import LOGO from "../assets/ParKingLogo.png";
+import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
 
 const Login = ({ navigation }) => {
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         width: 165,
         height: 73,
+       
     },
     pageName: {
         fontSize: 40,
