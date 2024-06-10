@@ -12,6 +12,7 @@ import { useFonts } from 'expo-font';
 import SearchParking from './screens/SearchParking';
 import Help from './screens/Help';
 import Checkout from './screens/Checkout';
+import UserSpace from './screens/UserSpace';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ function InsideLayout() {
       <InsideStack.Screen name="NFCTicket" component={NFCTicket} options={{ headerShown: false }} />
       <InsideStack.Screen name="Help" component={Help} options={{ headerShown: false }} />
       <InsideStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+      <InsideStack.Screen name="UserSpace" component={UserSpace} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 

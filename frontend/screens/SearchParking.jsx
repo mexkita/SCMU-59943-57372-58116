@@ -9,9 +9,13 @@ import { SearchBar } from '@rneui/themed';
 import { BottomSheet } from '@rneui/themed';
 import { FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from "../components/CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
 
 const SearchParking = () => {
+
+    const navigation = useNavigation();
+
 
     // Maybe mudar para FCT
     const INITIAL_REGION = {
@@ -34,32 +38,35 @@ const SearchParking = () => {
         setSearch(search);
     };
   
-const handleBooking = () =>{
-    setBottomSheetVisible(false)
+const handleBooking = (parkingLot) =>{
+    setBottomSheetVisible(false);
+    navigation.navigate('BookParkingSpot', {park: parkingLot});
+    
+    
 }
 
 
     const markers = [
         {
+            id: 0,
             latitude: 38.72249845287284,
             longitude: -9.137780372648901 ,
-            latitudeDelta: 2,
-            longitudeDelta: 2,
             title: 'Parking Lot x',
             totalSlots: 200,
             availableSlots: 100,
-            pricePerHour: '0.5€'
+            reservedAvailable: 20,
+            pricePerHour: '0.5'
 
         },
         {
+            id: 1,
             latitude: 38.66192985095062, 
             longitude: -9.205607571001307 ,
-            latitudeDelta: 2,
-            longitudeDelta: 2,
             title: 'Parking Lot FCT',
             totalSlots: 200,
             availableSlots: 150,
-            pricePerHour: '0.7€'
+            reservedAvailable: 20,
+            pricePerHour: '0.7'
 
         }
     ]
@@ -105,11 +112,11 @@ const handleBooking = () =>{
               initialRegion={INITIAL_REGION}
              
               >
-                {filteredMarkers.map((marker, index) => (
+                {filteredMarkers.map((marker) => (
                     <Marker
-                    key={index}
+                    key={marker.id}
                     coordinate={marker}
-                    pinColor='#006'
+                    pinColor={colors.orange}
                     onPress={() => onMarkerPress(marker)}
                     />
                     
@@ -128,19 +135,23 @@ const handleBooking = () =>{
                                 <Text style={styles.bottomSheetTitle}>{selectedMarker.title}</Text>
                                 <View style={styles.bottomSheetRow}>
                                     <View style={styles.bottomSheetRowParts}>
-                                    <FontAwesome5 name="car" size={30} color={colors.white} />
+                                    <FontAwesome5 name="car" size={25} color={colors.white} />
                                     <Text style={styles.bottomSheetDescription}>{selectedMarker.availableSlots}/{selectedMarker.totalSlots}</Text>
                                     </View>
                                     <View style={styles.bottomSheetRowParts}>
-                                    <FontAwesome5 name="euro-sign" size={24} color={colors.white} />
-                                    <Text style={styles.bottomSheetDescription}>{selectedMarker.pricePerHour}/1h</Text>
+                                    <FontAwesome5 name="bookmark" size={20} color={colors.white} />
+                                    <Text style={styles.bottomSheetDescription}>{selectedMarker.reservedAvailable}</Text>
+                                    </View>
+                                    <View style={styles.bottomSheetRowParts}>
+                                    <FontAwesome5 name="euro-sign" size={25} color={colors.white} />
+                                    <Text style={styles.bottomSheetDescription}>{selectedMarker.pricePerHour}€/1h</Text>
                                     </View>
                                 </View>
 
                                 </View>
                             </>
                         )}
-                        <CustomButton title={'Book'} onPressFunction={() => handleBooking()} color={colors.orange}/>
+                        <CustomButton title={'Book'} onPressFunction={() => handleBooking(selectedMarker)} color={colors.orange}/>
                        
                     </View>
                     </TouchableWithoutFeedback>
@@ -179,30 +190,6 @@ const styles = StyleSheet.create({
        flex:1
      
     },
-    calloutContainer:{
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10
-    },
-
-    calloutText:{
-        paddingTop: 5,
-        fontSize: 15,
-        fontFamily: 'League Spartan',
-        fontWeight: '500',
-        color: colors.greyText,
-        alignSelf: 'center',
-    },
-    calloutTitle:{
-        
-        fontSize: 18,
-        fontFamily: 'League Spartan',
-        fontWeight: '500',
-        color: colors.black,
-        alignSelf: 'center',
-    },
     searchBar:{
         position: 'absolute',
         top: 20,
@@ -217,11 +204,9 @@ const styles = StyleSheet.create({
          borderWidth: 1,
           padding: 15, 
           borderRadius: 5,
-           marginBottom: 50, 
+           marginBottom: 35, 
            marginTop: 20
     },
-
-
 
     bottomSheetContainer: {
         padding: 20,
@@ -231,13 +216,13 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30
     },
     bottomSheetTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 20,
         color:colors.white
     },
     bottomSheetDescription: {
-        fontSize: 16,
+        fontSize: 18,
         color:colors.white,
         alignItems: 'center',
         paddingLeft: 10,

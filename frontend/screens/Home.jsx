@@ -62,13 +62,14 @@ const styles = StyleSheet.create({
 
     container: {
         backgroundColor: colors.background,
-        paddingHorizontal: 30,
         flex: 1,
         paddingTop: 40,
     },
 
     scrollView: {
         width: "100%",
+        paddingHorizontal: 30,
+        paddingBottom: 30,
 
     },
     menuTitle: {
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 45,
+        marginTop: 35,
 
 
     },
