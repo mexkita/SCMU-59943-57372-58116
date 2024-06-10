@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/Login'
 import Register from './screens/Register'
 import BookParkingSpot from './screens/BookParkingSpot'
+import NFCTicket from './screens/NFCTicket'
 import Home from './screens/Home'
 import React, { useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
@@ -20,6 +21,7 @@ function InsideLayout() {
       <InsideStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <InsideStack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
       <InsideStack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
+      <InsideStack.Screen name="NFCTicket" component={NFCTicket} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 

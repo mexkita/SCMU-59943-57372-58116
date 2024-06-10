@@ -7,12 +7,16 @@ import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
 
+
 const Home = () => {
 
     const navigation = useNavigation();
 
 
-    const startParking = () => { }
+    const startParking = () => { 
+        navigation.navigate('NFCTicket');
+
+    }
 
     const handleNavigation = (pageName) => {
         navigation.navigate(pageName);
@@ -39,7 +43,7 @@ const Home = () => {
                     <View style={styles.menuContainer}>
                         <Text style={styles.menuSubtitle}>Utilities</Text>
                         <HomeButtons title={'Search for parking lots'} icon={'map-marker-outline'} onPressFunction={() => handleNavigation('SearchParking')} />
-                        <HomeButtons title={'Book Parking spot'} icon={'bookmark-outline'} onPressFunction={''} />
+                        <HomeButtons title={'Book Parking spot'} icon={'bookmark-outline'} onPressFunction={() => handleNavigation('BookParkingSpot')} />
                         <HomeButtons title={'Checkout'} icon={'wallet-outline'} onPressFunction={''} />
                         <HomeButtons title={'Help'} icon={'help-circle-outline'} onPressFunction={''} />
 
