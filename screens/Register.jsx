@@ -2,7 +2,7 @@ import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, KeyboardAv
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { CustomButton } from '../components/CostumButton';
+import { CustomButton } from '../components/CustomButton';
 import LOGO from "./../assets/ParKingLogo.png";
 import colors from '../assets/colors/colors';
 
@@ -34,7 +34,7 @@ const Register = ({ navigation }) => {
                 <ScrollView style={styles.scrollView}>
                     <Image style={styles.logo} source={LOGO} />
                     <Text style={styles.pageName}>Sing Up</Text>
-                        
+
                     <TextInput value={name} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Name" autoCapitalize="none" onChangeText={(text) => setName(text)} />
                     <TextInput value={email} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
                     <TextInput secureTextEntry={true} value={password} placeholderTextColor={colors.greyText} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
@@ -42,13 +42,13 @@ const Register = ({ navigation }) => {
                     <View style={styles.buttonView}>
                         {loading ? <ActivityIndicator size="large" color={colors.orange} />
                             : (
-                                <CustomButton title="Register" onPressFunction={signUp} color={colors.orange}/>    
+                                <CustomButton title="Register" onPressFunction={signUp} color={colors.orange} />
                             )
                         }
                     </View>
                     <View style={styles.loginView}>
-                        <Text style={{color: colors.greyText}}>Already a member? </Text>
-                        <Text style={{color: colors.white, textDecorationLine: 'underline'}} onPress={() => navigation.navigate('Login')}>Log in!</Text>
+                        <Text style={{ color: colors.greyText }}>Already a member? </Text>
+                        <Text style={{ color: colors.white, textDecorationLine: 'underline' }} onPress={() => navigation.navigate('Login')}>Log in!</Text>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
     scrollView: {
-        width:"100%"
+        width: "100%"
     },
     logo: {
-        alignSelf:'center',
+        alignSelf: 'center',
         marginBottom: 120,
         marginTop: 50,
     },
@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
         paddingTop: 40
     },
     loginView: {
-        justifyContent:"center",
-        flexDirection:"row",
+        justifyContent: "center",
+        flexDirection: "row",
         marginVertical: 30
-        
+
     }
 })

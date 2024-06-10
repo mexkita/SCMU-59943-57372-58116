@@ -1,48 +1,49 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from '../assets/colors/colors';
-import { Header } from "../components/Header";
+import Header from "../components/Header";
+import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { CustomButton } from '../components/CostumButton';
+import CustomButton from '../components/CustomButton';
 
 
-const HomePage = ({ navigation }) => {
+const HomePage = () => {
+
+    const navigation = useNavigation();
 
 
-    const startParking =  () => {
+    const startParking = () => {
 
     }
 
 
+    return (
+        <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.scrollView}>
+                <Header />
+                <View style={styles.titleContainer}>
+                    <Text style={styles.menuTitle}>Hello Jack</Text>
+                    <FontAwesome5 name="car" size={50} color={colors.white} />
+                </View>
+                <View style={styles.menuContainer}>
+                    <CustomButton title="Start Parking" onPressFunction={startParking} color={colors.orange} />
+                    <View style={styles.menuContainer}>
+                        <Text style={styles.menuSubtitle}>Bookings</Text>
+                        <TouchableOpacity
+                            onPress={'onPressFunction'}
+                            style={({ ...styles.button, backgroundColor: colors.grey })}
+                        >
+                            <View style={styles.contents}>
+                                <Text style={styles.buttonText}>{'title'}</Text>
+                            </View>
 
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
-return(
-    <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-            <Header/>
-            <View style={styles.titleContainer}>
-                <Text style={styles.menuTitle}>Hello Jack</Text>
-                <FontAwesome5 name="car" size={50} color={colors.white} />
-            </View>
-         <View style={styles.menuContainer}>
-            <CustomButton title="Start Parking" onPressFunction={startParking} color={colors.orange}/> 
-            <View style={styles.menuContainer}>
-                <Text style={styles.menuSubtitle}>Bookings</Text>
-                    <TouchableOpacity
-                        onPress={'onPressFunction'}
-                        style={({ ...styles.button, backgroundColor: colors.grey })  }
-                    >
-                        <View style={styles.contents}>
-                        <Text style={styles.buttonText }>{'title'}</Text>
-                        </View>
+            </ScrollView>
+        </SafeAreaView>
 
-                     </TouchableOpacity>
-            </View>
-         </View>
-        
-        </ScrollView>
-    </SafeAreaView>
-   
-);
+    );
 }
 
 export default HomePage;
@@ -82,21 +83,21 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         paddingHorizontal: 30,
         flex: 1,
-        paddingTop: 30,
+        paddingTop: 40,
     },
 
     scrollView: {
-        width:"100%"
+        width: "100%"
     },
 
     logo: {
         width: 116,
         height: 51,
-      
-      
+
+
     },
-    header : {
-        width: "100%" ,
+    header: {
+        width: "100%",
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: colors.white,
         alignSelf: 'flex-start',
-        
+
     },
     menuSubtitle: {
         fontSize: 24,
@@ -119,19 +120,19 @@ const styles = StyleSheet.create({
         color: colors.white,
         alignSelf: 'flex-start',
     },
-    titleContainer : {
-        width: "100%" ,
+    titleContainer: {
+        width: "100%",
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: 45,
-        
+
 
     },
     menuContainer: {
         marginTop: 35,
         flex: 1
     }
-    
+
 })
