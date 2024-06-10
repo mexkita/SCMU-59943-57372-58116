@@ -1,5 +1,5 @@
 import { Image, StyleSheet, View } from "react-native";
-import LOGO from "./../assets/ParKingLogo.png";
+import LOGO from "../assets/ParKingLogo.png"
 import { FontAwesome } from '@expo/vector-icons';
 
 const Header = () => {

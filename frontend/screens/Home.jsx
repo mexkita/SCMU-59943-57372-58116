@@ -6,7 +6,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
-import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
 
