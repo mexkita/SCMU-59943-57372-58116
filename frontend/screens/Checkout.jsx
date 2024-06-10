@@ -29,9 +29,9 @@ const Checkout = () => {
     return(  
     
     <SafeAreaView style={styles.container}>
-        
+         <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Header/>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+       
         <View style={styles.titleContainer}>
             <Text style={styles.title}>Checkout</Text>
         </View>
@@ -64,8 +64,12 @@ const Checkout = () => {
             </View> 
 
             <View style={styles.paymentMethods}>
-              <Image style={styles.image} source={MBWAY}/>
-              <Image style={styles.image} source={MB}/>
+              <View style={styles.imageContainer}>
+                <Image style={styles.image} source={MBWAY}/>
+              </View>
+              <View style={styles.imageContainer}>
+                <Image style={styles.image} source={MB}/>
+              </View>
             </View> 
 
             <View style={styles.inputContainer}>
@@ -98,6 +102,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         flex: 1,
         paddingTop: 40,
+        
        
 
     },
@@ -141,12 +146,19 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around'
 
     },
-    image: {
-        height:60,
-        width: 100,
+    imageContainer: {
         backgroundColor: colors.white,
         borderColor: colors.orange,
         borderWidth: 1,
+        borderRadius: 10,
+        padding:8,
+        alignItems: 'center',
+        justifyContent: 'center'
+        
+    },
+    image: {
+        height:50,
+        width: 100,
         borderRadius: 10,
         resizeMode: 'contain'
     },
