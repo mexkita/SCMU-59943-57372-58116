@@ -28,7 +28,6 @@
         "expo-font",
         {
           "fonts": [
-            
             "./assets/fonts/League_Spartan/LeagueSpartan-SemiBold.ttf",
             "./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf"
           ]

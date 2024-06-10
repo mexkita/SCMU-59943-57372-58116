@@ -17,9 +17,9 @@ const InsideStack = createNativeStackNavigator();
 function InsideLayout() {
   return (
     <InsideStack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Stack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
-      <Stack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
+      <InsideStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      <InsideStack.Screen name="BookParkingSpot" component={BookParkingSpot} options={{ headerShown: false }} />
+      <InsideStack.Screen name="SearchParking" component={SearchParking} options={{ headerShown: false }} />
     </InsideStack.Navigator>
   )
 
@@ -29,7 +29,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [fontsLoaded] = useFonts({
     'League Spartan': require('./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf'),
-    'League Spartan': require("./assets/fonts/League_Spartan/LeagueSpartan-SemiBold.ttf"),
+    'League Spartan-SemiBold': require("./assets/fonts/League_Spartan/LeagueSpartan-SemiBold.ttf"),
   });
 
   useEffect(() => {
@@ -48,6 +48,9 @@ export default function App() {
           <>
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+
+
+
           </>
         )}
       </Stack.Navigator>
