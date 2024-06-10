@@ -134,4 +134,26 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.getUserReservation = async (req, res) => {
+  try {
+    //Validate the request params
+    const { paramError } = Joi.string().validate(req.params.userId);
+
+    if (paramError) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const userId = req.params.userId;
+    const userRef = db.collection('users').doc(userId);
+    const user = await userRef.get();
+
+
+
+    res.status(200).json(user.data().reservation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 

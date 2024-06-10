@@ -16,6 +16,8 @@ router.get(userAPI, user.getAll);
 
 router.put(userAPI + "/:idU", user.updateUser);
 
+router.get(userAPI + "/reservation/:userId", user.getUserReservation);
+
 
 
 
