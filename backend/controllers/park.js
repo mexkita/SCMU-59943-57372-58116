@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const { db } = require("../firebase_config");
 const { collection, addDoc } = require('firebase/firestore');
+const { FieldValue } = require("firebase-admin/firestore");
 
 const createParkSchema = Joi.object({
     username: Joi.string().required(),
@@ -94,7 +95,7 @@ exports.getAll = async (req, res) => {
 };
 
 const updateSpotStatusSchema = Joi.object({
-    spot: Joi.string().required(),
+    spot_type: Joi.string().valid('normal', 'reserved').required(),
     status: Joi.boolean().required()
 });
 
@@ -120,18 +121,18 @@ exports.updateSpotStatus = async (req, res) => {
             return res.status(404).json({ message: "Park not found" });
         }
 
-        const spots = (await parkRef.listCollections())[0];
+        let updatedSpot;
 
-        const spotToUpdateRef = spots.doc(data.spot);
-        const spotToUpdate = await spotToUpdateRef.get();
-
-        if (!spotToUpdate.exists) {
-            return res.status(404).json({ message: "Spot not found" });
+        if ("normal".match(data.spot_type)) {
+            updatedSpot = await parkRef.update({
+                "free_spots": data.status ? FieldValue.increment(-1) : FieldValue.increment(1)
+            });
+        } else {
+            updatedSpot = await parkRef.update({
+                "free_reserved_spots": data.status ? FieldValue.increment(-1) : FieldValue.increment(1)
+            });
         }
 
-        const updatedSpot = await spotToUpdateRef.update({
-            "occupied": data.status
-        });
 
 
         res.status(200).json({ message: "Spot status updated!" });
