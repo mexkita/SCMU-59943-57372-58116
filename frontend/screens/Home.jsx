@@ -67,21 +67,6 @@ const styles = StyleSheet.create({
         width:"100%",
        
     },
-
-    logo: {
-        width: 116,
-        height: 51,
-    
-    },
-    header : {
-        width: "100%" ,
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-
-    },
-
     menuTitle: {
         fontSize: 30,
         fontFamily: 'League Spartan',
