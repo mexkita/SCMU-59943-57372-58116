@@ -1,5 +1,5 @@
 
-import {  SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import {  SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import colors from "../assets/colors/colors";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
@@ -8,12 +8,12 @@ import { Divider } from 'react-native-elements';
 import { Image } from 'react-native-elements';
 import MBWAY from '../assets/MBWay.png'
 import MB from '../assets/multibanco.webp'
-
-
-
+import { useNavigation } from "@react-navigation/native";
 
 
 const Checkout = () => {
+
+    const navigation = useNavigation();
 
     const [startCheckout, setStartCheckout] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState();
@@ -22,11 +22,17 @@ const Checkout = () => {
         setStartCheckout(!startCheckout);
     }
 
+    const handleGetTicket = () =>{
+        navigation.navigate('NFCTicket')
+    }
+
     return(  
     
     <SafeAreaView style={styles.container}>
+        
         <Header/>
-        <View style={styles.inputContainer}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.titleContainer}>
             <Text style={styles.title}>Checkout</Text>
         </View>
         <View style={styles.inputContainer}>
@@ -44,6 +50,9 @@ const Checkout = () => {
         <>
             <View style={styles.inputContainer}>
                 <Text style={styles.text}>Parked time: {''}</Text>
+            </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.text}>Price: {''}</Text>
             </View>
 
              <View style={styles.inputContainer}>
@@ -65,20 +74,19 @@ const Checkout = () => {
 
             </View>
             <Text style={styles.warningText}>You have 10 min after payment to leave the park</Text>
+
+
+            <View style={styles.inputContainer}>
+            <CustomButton title={'Get Ticket'} color={colors.orange} onPressFunction={handleGetTicket}/> 
+            </View> 
+
 </>
 
-            
-            
-            
-            
-            
-            
-            
             : <></>
         }
 
 
-
+    </ScrollView>
     </SafeAreaView>)
 
 }
@@ -88,10 +96,17 @@ export default Checkout;
 const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
-        paddingHorizontal: 30,
         flex: 1,
         paddingTop: 40,
        
+
+    },
+
+
+    scrollViewContent: {
+        width: "100%",
+        paddingHorizontal: 30,
+        paddingBottom: 30,
 
     },
     title: {
@@ -110,8 +125,12 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
        
     },
+    titleContainer:{
+        marginTop: 20,
+
+    },
     inputContainer:{
-        marginTop: 40,
+        marginTop: 30,
        
     },
     paymentMethods:{
