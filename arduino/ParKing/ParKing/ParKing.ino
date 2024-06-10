@@ -20,6 +20,10 @@ float timeOut = MAX_DISTANCE * 60;
 int soundVelocity = 340; 
 float sonarResult;
 
+// RGB LED
+const byte ledPins[] = {15, 2, 4}; // define red, green, blue led pins
+#define RGBDistanceTrigger 50.0
+
 // ENDPOINTS for backend requests
 #define ENTRANCE_OR_EXIT_PARK_URL "http://192.168.1.11:8080/api/park/012345" //http://localhost:8080/api/park/{parkId}
 
@@ -31,9 +35,22 @@ char jsonOutput[128];
 
 void setup() 
 {
-
   Serial.begin(115200);
-  
+
+  // LCD setup
+  lcdSetup();
+
+  // Proximity Ultrasonic Sensor setup
+  pinMode(trigPin,OUTPUT);  // set trigPin to output mode
+  pinMode(echoPin,INPUT);   // set echoPin to input mode
+
+  // RGB LED setup
+  for (int i = 0; i < 3; i++) {       
+    if (!ledcAttach(ledPins[i], 1000, 8)) {
+      Serial.println("Error attaching LEDC pin");
+    }
+  }
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi");
 
@@ -48,12 +65,7 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.println();
 
-  // LCD Setup
-  lcdSetup();
 
-  // Proximity Ultrasonic Sensor setup
-  pinMode(trigPin,OUTPUT);// set trigPin to output mode
-  pinMode(echoPin,INPUT); // set echoPin to input mode
 }
 
 void loop() 
@@ -69,8 +81,11 @@ void loop()
 
   //delay(10000);
 
+  delay(500);
+
   getSonarDistance();
   
+  setRGBLedColor();
 }
 
 void lcdSetup() {
@@ -84,7 +99,6 @@ void lcdSetup() {
 }
 
 void getSonarDistance() {
-  delay(500); // Wait 100ms between pings (about 20 pings/sec).
   Serial.printf("Distance: ");
   sonarResult = getSonar();
   Serial.print(sonarResult); // Send ping, get distance in cm and print result
@@ -104,6 +118,19 @@ float getSonar() {
  distance = (float)pingTime * soundVelocity / 2 / 10000;
  return distance; // return the distance value
 }
+
+void setRGBLedColor() {
+  if (sonarResult > RGBDistanceTrigger) { // red
+    ledcWrite(ledPins[0], 255); 
+    ledcWrite(ledPins[1], 0);
+    ledcWrite(ledPins[2], 0);
+  } else {                                // green
+    ledcWrite(ledPins[0], 0); 
+    ledcWrite(ledPins[1], 255);
+    ledcWrite(ledPins[2], 0);
+  }
+}
+
 
 // PUT
 // path -> parkId  
