@@ -16,6 +16,7 @@ router.get(parkAPI, park.getAll);
 
 router.put(parkAPI + "/:idU", park.updateSpotStatus);
 
+router.get(parkAPI + "/available_spots/:parkId", park.availableSpots)
 
 
 

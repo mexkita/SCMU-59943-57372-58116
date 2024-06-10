@@ -143,3 +143,33 @@ exports.updateSpotStatus = async (req, res) => {
 };
 
 
+exports.availableSpots = async (req, res) => {
+    try {
+        //Validate the request params
+        const { paramError } = Joi.string().validate(req.params.parkId);
+
+        if (paramError) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const parkID = req.params.parkId;
+
+        // find park by ID in the database
+        const parkRef = db.collection('parks').doc(parkID);
+        const park = await parkRef.get();
+
+        if (!park.exists) {
+            return res.status(404).json({ message: "Park not found" });
+        }
+
+        const normal_spots = park.data().free_spots;
+        const reserved_spots = park.data().free_reserved_spots
+
+
+        res.status(200).json({ normal_spots, reserved_spots });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
