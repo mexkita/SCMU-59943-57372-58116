@@ -18,8 +18,6 @@ const styles = StyleSheet.create({
     logo: {
         width: 116,
         height: 51,
-
-
     },
     header: {
         width: "100%",

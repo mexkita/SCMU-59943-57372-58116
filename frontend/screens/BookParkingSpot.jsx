@@ -4,14 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import colors from '../assets/colors/colors';
 import Header from "../components/Header";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
+import { Picker } from '@react-native-picker/picker';
 
 const BookParkingSpot = () => {
     const navigation = useNavigation();
 
     const [date, setDate] = useState(new Date());
+    const [selectedParkingLot, setParkingLot] = useState();
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -42,14 +43,31 @@ const BookParkingSpot = () => {
                 <Header />
                 <View style={styles.pageGlobalView}>
                     <Text style={styles.pageTitle}>Book Parking Spot</Text>
-                    <InputPicker title="Parking Lot" auxFunction={showTimepicker} date={date} />
+                    <Text style={styles.parkingLotTitle}>Parking Lot</Text>
+                    <View style={styles.parkingLotPickerView}>
+                        <Picker
+                            selectedValue={selectedParkingLot}
+                            style={styles.parkingLotPicker}
+                            dropdownIconColor={colors.greyText}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setParkingLot(itemValue)
+                            }>
+                            {/* TODOOOOO list parking lots from backend */}
+                            <Picker.Item label="FCT Lidl" value="fct lidl" />
+                            <Picker.Item label="FCT Dep" value="fct dep" />
+                            <Picker.Item label="FCT main avenue" value="fct main" />
+                            <Picker.Item label="FCT DI" value="fct di" />
+                        </Picker>
+                    </View>
+
                     <InputPicker title="Date" auxFunction={showDatepicker} date={date} />
                     <View style={styles.startAndEndTimeView}>
                         <InputPicker title="Start Time" auxFunction={showTimepicker} date={date} />
                         <InputPicker title="End Time" auxFunction={showTimepicker} date={date} />
                     </View>
                     <View style={styles.bookButtonView}>
-                        <CustomButton title="Book Spot" onPressFunction={{}} color={colors.orange} />
+                        {/* TODOOOOO connect to firebase */}
+                        <CustomButton title="Book Spot" onPressFunction={null} color={colors.orange} />
                     </View>
                 </View>
             </ScrollView>
@@ -80,6 +98,23 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         alignSelf: "center",
         marginBottom: 30,
+    },
+    parkingLotTitle: {
+        color: colors.white,
+        marginLeft: 8,
+        marginBottom: 8,
+        fontSize: 18
+    },
+    parkingLotPickerView: {
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: colors.greyText,
+        margin: 5,
+        justifyContent: 'center',
+    },
+    parkingLotPicker: {
+        color: colors.secondaryText,
+        height: 50,
     },
     startAndEndTimeView: {
         display: "flex",

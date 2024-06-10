@@ -1,16 +1,20 @@
 import React from 'react'
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native'
 import colors from '../assets/colors/colors'
-import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 
 const InputPicker = ({ title, auxFunction, date }) => {
+    const displayDate = title === 'Date'
+        ? date.toLocaleDateString()
+        : date.toLocaleTimeString();
+
     return (
         <View style={styles.componentsViews}>
             <Text style={styles.componentsTitle}>{title}</Text>
             <TouchableOpacity style={styles.input} onPress={auxFunction}>
-                <Text style={styles.inputText}>{date.toLocaleTimeString()}</Text>
-                <AntDesign name="caretdown" size={15} color={colors.greyText} />
+                <Text style={styles.inputText}>{displayDate}</Text>
+                <FontAwesome name="caret-down" size={15} color={colors.greyText} />
             </TouchableOpacity>
         </View>
     );
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: colors.background,
         borderRadius: 10,
-        padding: 10,
+        paddingHorizontal: 20,
         borderWidth: 1,
         borderColor: colors.greyText,
         marginBottom: 10,
