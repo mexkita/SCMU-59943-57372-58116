@@ -22,6 +22,9 @@ const Home = () => {
         navigation.navigate(pageName);
     }
 
+    const handleReservedBook = () => {
+        navigation.navigate('NFCTicket');
+    }
 
 
 
@@ -38,7 +41,12 @@ const Home = () => {
                     <CustomButton title="Start Parking" onPressFunction={startParking} color={colors.orange} />
                     <View style={styles.menuContainer}>
                         <Text style={styles.menuSubtitle}>Bookings</Text>
-                        <BookingsCard />
+                        <BookingsCard 
+                        onPressFunction={handleReservedBook}
+                        parkingLot={'ParkingLot'}
+                        date={'12/05/24'}
+                        hour={'12h30'}
+                        />
                     </View>
                     <View style={styles.menuContainer}>
                         <Text style={styles.menuSubtitle}>Utilities</Text>

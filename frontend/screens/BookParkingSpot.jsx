@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import colors from '../assets/colors/colors';
 import Header from "../components/Header";
@@ -7,6 +7,8 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
 import { Picker } from '@react-native-picker/picker';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_AUTH } from '../FirebaseConfig'; 
 
 const BookParkingSpot = ({route}) => {
     const navigation = useNavigation();
@@ -16,7 +18,21 @@ const BookParkingSpot = ({route}) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [selectedParkingLot, setParkingLot] = useState(park ? park.title: '');
+    //const [parkingLots, setParkingLots] = useState();
+    const [userId, setUserId] = useState(null);
 
+   /* useEffect(() => {
+        const auth = getAuth(FIREBASE_AUTH);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUserId(user.uid);
+            } else {
+                navigation.navigate('Login'); // Redirect to login if no user is logged in
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);*/
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || startDate;
@@ -88,7 +104,6 @@ const BookParkingSpot = ({route}) => {
     }
 
 
-    
     const parkingLots = [
         {
             id: 0,
@@ -97,6 +112,7 @@ const BookParkingSpot = ({route}) => {
             title: 'Parking Lot x',
             totalSlots: 200,
             availableSlots: 100,
+            reservedAvailable: 20,
             pricePerHour: '0.5'
 
         },
@@ -107,10 +123,52 @@ const BookParkingSpot = ({route}) => {
             title: 'Parking Lot FCT',
             totalSlots: 200,
             availableSlots: 150,
+            reservedAvailable: 20,
             pricePerHour: '0.7'
 
         }
     ]
+
+
+    const handleBookSpot = async () => {
+        if (!userId) {
+            Alert.alert("Error", "User not authenticated.");
+            return;
+        }
+        // Check parking lots request
+        const parkingLot = parkingLots.find(lot => lot.title === selectedParkingLot);
+        if (!parkingLot) {
+            console.log("Error", "Please select a valid parking lot.");
+            return;
+        }
+
+        const payload = {
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString()
+        };
+
+        try {
+            const response = await fetch(`https://your-backend-url/api/park/${parkingLot.id}/users/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to book parking spot');
+            }
+
+            const data = await response.json();
+            console.log("Success", "Parking spot booked successfully!");
+            // Optionally, navigate to another screen or update the UI
+        } catch (error) {
+            console.log("Error", error.message);
+        }
+    };
+
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -150,7 +208,7 @@ const BookParkingSpot = ({route}) => {
                     </View>
                     <View style={styles.bookButtonView}>
                         {/* TODOOOOO connect to firebase */}
-                        <CustomButton title="Book Spot" onPressFunction={printDatesDebug} color={colors.orange} />
+                        <CustomButton title="Book Spot" onPressFunction={handleBookSpot} color={colors.orange} />
                     </View>
                 </View>
             </ScrollView>
