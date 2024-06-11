@@ -1,10 +1,10 @@
 import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView, ScrollView, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import CustomButton from '../components/CustomButton';
 import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
+import { useAuth } from '../AuthProvider';
 
 const Login = ({ navigation }) => {
 
@@ -12,12 +12,13 @@ const Login = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
+    const { login } = useAuth()
 
     const signIn = async () => {
         setLoading(true);
         try {
 
-            const response = await signInWithEmailAndPassword(auth, email, password)
+            await login(email, password)
 
         } catch (error) {
             console.log(error)
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         width: 165,
         height: 73,
-       
+
     },
     pageName: {
         fontSize: 40,

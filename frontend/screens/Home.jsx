@@ -6,16 +6,19 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
+import { useState } from "react";
+import { useAuth } from "../AuthProvider";
 
 
 const Home = () => {
 
     const navigation = useNavigation();
 
+    const { user } = useAuth()
 
-    const startParking = () => { 
+
+    const startParking = () => {
         navigation.navigate('NFCTicket');
-
     }
 
     const handleNavigation = (pageName) => {
@@ -26,15 +29,12 @@ const Home = () => {
         navigation.navigate('NFCTicket');
     }
 
-
-
-
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Header />
                 <View style={styles.titleContainer}>
-                    <Text style={styles.menuTitle}>Hello Jack</Text>
+                    <Text style={styles.menuTitle}>Hello {user.name}</Text>
                     <FontAwesome5 name="car" size={50} color={colors.white} />
                 </View>
                 <View style={styles.menuContainer}>
