@@ -69,7 +69,7 @@ const BookParkingSpot = ({ route }) => {
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || reservation.startDate;
-        setStartDate(currentDate);
+        setReservation({ ...reservation, startDate: currentDate });
         if (selectedDate > reservation.endDate || !reservation.endDate)
             setReservation({ ...reservation, startDate: currentDate });
     };
@@ -103,8 +103,7 @@ const BookParkingSpot = ({ route }) => {
 
     const handleChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || reservation.startDate;
-        setStartDate(currentDate);
-        setEndDate(currentDate);
+        setReservation({ ...reservation, startDate: currentDate, endDate: currentDate });
     }
 
     const showDatepicker = () => {
