@@ -29,6 +29,9 @@ function InsideLayout() {
       <InsideStack.Screen name="Help" component={Help} options={{ headerShown: false }} />
       <InsideStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
       <InsideStack.Screen name="UserSpace" component={UserSpace} options={{ headerShown: false }} />
+
+
+
     </InsideStack.Navigator>
   )
 

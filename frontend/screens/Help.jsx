@@ -1,19 +1,62 @@
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import colors from "../assets/colors/colors";
 import Header from "../components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
+import { parkApi } from "../api";
+import { Picker } from '@react-native-picker/picker';
 
 
 
 const Help = () => {
 
 const [problemDescription, setProblemDescription] = useState();
+const [parkingLots, setParkingLots] = useState([])
+const [selectedParkId, setSelectedParkId] = useState();
+
 
 
 const handleSendReport = () =>{
 
+reportProblem();
+
 }
+
+
+
+    useEffect(() => {
+        getAllParkings();
+    }, []);
+
+    const getAllParkings = async () => {
+
+        try {
+            const parkingLots = await parkApi.getAllParks()
+            setParkingLots(parkingLots)
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
+
+    const handleSelectPark = (parkId, itemIndex) => {
+        console.log("Selected Park ", parkId)
+        setSelectedParkId(parkId)
+    }
+
+
+const reportProblem = async () => {
+
+    try {
+        await parkApi.reportProblem(selectedParkId ,{message: problemDescription  })
+        alert("Problem Reported!");
+    } catch (error) {
+        console.log("[" + error.response.status + "] " + error.response.data.message)
+        alert(error.response.data.message)
+    }
+
+}
+
 
     
     return(  
@@ -23,6 +66,21 @@ const handleSendReport = () =>{
             <View style={styles.inputContainer}>
                 <Text style={styles.title}>Report the problem here!</Text>
             </View>
+
+            <View style={styles.parkingLotPickerView}>
+                        <Picker
+                            selectedValue={selectedParkId}
+                            style={styles.parkingLotPicker}
+                            dropdownIconColor={colors.greyText}
+                            onValueChange={handleSelectPark}>
+
+                            {parkingLots && parkingLots.map((park) => (
+                                <Picker.Item key={park.parkId} label={park.title} value={park.parkId} />
+                            ))
+                            }
+
+                        </Picker>
+                    </View>
             <View style={styles.inputContainer}>
 
                 <TextInput 
@@ -64,6 +122,8 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: colors.white,
         alignSelf: 'flex-start',
+        paddingBottom: 20,
+
 
     },
     input: {
@@ -80,6 +140,17 @@ const styles = StyleSheet.create({
     inputContainer:{
         marginTop: 40,
        
-    }
+    },
+    parkingLotPickerView: {
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: colors.greyText,
+        margin: 5,
+        justifyContent: 'center',
+    },
+    parkingLotPicker: {
+        color: colors.secondaryText,
+        height: 50,
+    },
 
 })

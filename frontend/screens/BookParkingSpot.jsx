@@ -14,29 +14,7 @@ const BookParkingSpot = ({ route }) => {
     const navigation = useNavigation();
     const { park } = route.params || {};
     const { user } = useAuth();
-    const [parkingLots, setParkingLots] = useState([])
-
-    /* [
-        {
-            id: '0',
-            latitude: 38.72249845287284,
-            longitude: -9.137780372648901,
-            title: 'Parking Lot x',
-            totalSlots: 200,
-            availableSlots: 100,
-            pricePerHour: '0.5'
-        },
-        {
-            id: '1',
-            latitude: 38.66192985095062,
-            longitude: -9.205607571001307,
-            title: 'Parking Lot FCT',
-            totalSlots: 200,
-            availableSlots: 150,
-            pricePerHour: '0.7'
-
-        }
-    ] */
+    const [parkingLots, setParkingLots] = useState([]);
 
     const [reservation, setReservation] = useState({ startDate: new Date(), endDate: new Date() })
     const [selectedParkId, setSelectedParkId] = useState(park ? park.parkId : '');
@@ -62,18 +40,6 @@ const BookParkingSpot = ({ route }) => {
         setSelectedParkId(parkId)
     }
 
-   /* useEffect(() => {
-        const auth = getAuth(FIREBASE_AUTH);
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                navigation.navigate('Login'); // Redirect to login if no user is logged in
-            }
-        });
-
-        return () => unsubscribe();
-    }, []);*/
 
     const onChangeStartDate = (event, selectedDate) => {
         const currentDate = selectedDate || reservation.startDate;
@@ -151,46 +117,6 @@ const BookParkingSpot = ({ route }) => {
     }
 
 
-
-
-
-    const handleBookSpot = async () => {
-        if (!userId) {
-            Alert.alert("Error", "User not authenticated.");
-            return;
-        }
-        // Check parking lots request
-        const parkingLot = parkingLots.find(lot => lot.title === selectedParkingLot);
-        if (!parkingLot) {
-            console.log("Error", "Please select a valid parking lot.");
-            return;
-        }
-
-        const payload = {
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString()
-        };
-
-        try {
-            const response = await fetch(`https://your-backend-url/api/park/${parkingLot.id}/users/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to book parking spot');
-            }
-
-            const data = await response.json();
-            console.log("Success", "Parking spot booked successfully!");
-            // Optionally, navigate to another screen or update the UI
-        } catch (error) {
-            console.log("Error", error.message);
-        }
-    };
 
 
 

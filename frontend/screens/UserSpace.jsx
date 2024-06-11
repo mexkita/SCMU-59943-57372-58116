@@ -12,9 +12,12 @@ const UserSpace = () => {
     const navigation = useNavigation();
 
     const handleLogout = async () => {
-        navigation.navigate("Login")
         await logout()
+        navigation.navigate('Login')
+        
     }
+
+   
 
     return (
         <SafeAreaView style={styles.container}>
@@ -25,12 +28,12 @@ const UserSpace = () => {
             <View style={styles.titleContainer}>
                 <View style={styles.info}>
                     <Text style={styles.infoTitle}>Name:</Text>
-                    <Text style={styles.infoText}>{user.name}</Text>
+                    <Text style={styles.infoText}>{user?.displayName}</Text>
 
                 </View>
                 <View style={styles.info}>
                     <Text style={styles.infoTitle}>Email:</Text>
-                    <Text style={styles.infoText}>{user.email}</Text>
+                    <Text style={styles.infoText}>{user?.email}</Text>
                 </View>
 
             </View>

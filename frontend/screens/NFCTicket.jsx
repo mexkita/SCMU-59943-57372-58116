@@ -188,9 +188,7 @@ async function readNfc() {
                 <Text style={styles.ticketText}>Hold to reader</Text>
             </View>
 
-            <TouchableOpacity onPress={readNfc}>
-        <Text>Scan a Tag</Text>
-      </TouchableOpacity>
+           
 
 
         </SafeAreaView>

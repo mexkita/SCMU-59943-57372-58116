@@ -6,8 +6,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../AuthProvider";
+import { usersApi } from "../api";
 
 
 const Home = () => {
@@ -16,9 +17,41 @@ const Home = () => {
 
     const { user } = useAuth()
 
+    const [reservation, setReservation]= useState({title: '', startDate: new Date()})
+
 
     const startParking = () => {
         navigation.navigate('NFCTicket');
+        startParkingRequest()
+    }
+
+    const startParkingRequest = async () => {
+
+        try {
+            await usersApi.startParking(user.id, '012345')
+            alert("Started parking!");
+        } catch (error) {
+            console.log("[" + error.response.status + "] " + error.response.data.message)
+            alert(error.response.data.message)
+        }
+
+    }
+
+
+    useEffect(() => {
+        getReservation();
+    }, []);
+
+    const getReservation = async () => {
+
+        try {
+            const reservations = await usersApi.getReservationsByUser(user.id)
+            setReservation({title: reservations.title, startDate: new Date(reservations.start_date)});
+           console.log( reservation.startDate)
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
     const handleNavigation = (pageName) => {
@@ -29,12 +62,27 @@ const Home = () => {
         navigation.navigate('NFCTicket');
     }
 
+
+    const formatDate = (date) => {
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Months are zero-indexed
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    const formatTime = (date) => {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${hours}h${minutes < 10 ? '0' : ''}${minutes}`; // Add leading zero if minutes are less than 10
+    }
+
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Header />
                 <View style={styles.titleContainer}>
-                    <Text style={styles.menuTitle}>Hello {user.name}</Text>
+                    <Text style={styles.menuTitle}>Hello {user?.displayName}</Text>
                     <FontAwesome5 name="car" size={50} color={colors.white} />
                 </View>
                 <View style={styles.menuContainer}>
@@ -43,9 +91,9 @@ const Home = () => {
                         <Text style={styles.menuSubtitle}>Bookings</Text>
                         <BookingsCard 
                         onPressFunction={handleReservedBook}
-                        parkingLot={'ParkingLot'}
-                        date={'12/05/24'}
-                        hour={'12h30'}
+                        parkingLot={reservation.title}
+                        date={formatDate(reservation.startDate)}
+                        hour={formatTime(reservation.startDate)}
                         />
                     </View>
                     <View style={styles.menuContainer}>

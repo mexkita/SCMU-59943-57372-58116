@@ -1,6 +1,6 @@
 import { request } from "./utils/firebaseAux"
 
-const baseUrl = "http://192.168.1.125:8080/api"
+const baseUrl = "http://192.168.1.10:8080/api"
 const parkApi = baseUrl + "/park"
 
 
@@ -18,4 +18,17 @@ export const getAllParks = async () => {
     //console.log('Response data:', response.data);
     return response.data;
 }
+
+export const reportProblem = async (parkId, message) => {
+
+    console.log("Reporting Proble", parkId, message)
+    const response = await request("post", parkApi + "/report/" + parkId, message)
+    console.log("Response data: ", response.data)
+    return response.data;
+}
+
+
+
+
+
 

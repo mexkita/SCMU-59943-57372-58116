@@ -3,28 +3,71 @@ import {  SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "re
 import colors from "../assets/colors/colors";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Divider } from 'react-native-elements';
 import { Image } from 'react-native-elements';
 import MBWAY from '../assets/MBWay.png'
 import MB from '../assets/multibanco.webp'
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../AuthProvider";
+import { usersApi } from "../api";
 
 
 const Checkout = () => {
 
+    const { user } = useAuth();
     const navigation = useNavigation();
 
     const [startCheckout, setStartCheckout] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState();
+    const [currentTime, setCurrentTime] = useState();
+    const [finalTime, setFinalTime] = useState();
+    const [totalPrice, setTotalPrice] = useState();
 
     const handleStopParking = () =>{
-        setStartCheckout(!startCheckout);
+        setStartCheckout(true);
+        finishParkingRequest();
     }
 
     const handleGetTicket = () =>{
         navigation.navigate('NFCTicket')
     }
+
+    const getCurrentTime = async () => {
+
+        try {
+            const currentTimeResponse = await usersApi.getCurrentParkingTime(user.id)
+            console.log(currentTimeResponse)
+            setCurrentTime(currentTimeResponse.elapsed)
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
+
+
+    const finishParkingRequest = async () => {
+
+        try {
+            const response = await usersApi.finishParking(user.id)
+            console.log(response);
+            setTotalPrice(response.total_price);
+            setFinalTime(response.total_time)
+            alert("Finished parking!");
+        } catch (error) {
+            console.log("[" + error.response.status + "] " + error.response.data.message)
+            alert(error.response.data.message)
+        }
+
+    }
+
+    
+
+
+
+    useEffect(() => {
+        getCurrentTime();
+    }, []);
 
     return(  
     
@@ -35,8 +78,9 @@ const Checkout = () => {
         <View style={styles.titleContainer}>
             <Text style={styles.title}>Checkout</Text>
         </View>
-        <View style={styles.inputContainer}>
-            <Text style={styles.text}>Current parking time: {''}</Text>
+        <View style={styles.inputContainerRow}>
+            <Text style={styles.text}>Current parking time: </Text>
+            <Text style={styles.subtitle}>{currentTime ? currentTime : ' Not started'}</Text>
         </View>
         
 
@@ -49,10 +93,10 @@ const Checkout = () => {
         {startCheckout ?
         <>
             <View style={styles.inputContainer}>
-                <Text style={styles.text}>Parked time: {''}</Text>
+                <Text style={styles.text}>Parked time: {finalTime}</Text>
             </View>
             <View style={styles.inputContainer}>
-                <Text style={styles.text}>Price: {''}</Text>
+                <Text style={styles.text}>Price: {totalPrice}</Text>
             </View>
 
              <View style={styles.inputContainer}>
@@ -106,6 +150,11 @@ const styles = StyleSheet.create({
        
 
     },
+    inputContainerRow:{
+        marginTop: 30,
+        flexDirection: 'row',
+     
+    },
 
 
     scrollViewContent: {
@@ -121,6 +170,15 @@ const styles = StyleSheet.create({
         color: colors.white,
         alignSelf: 'center'
 
+    },
+    subtitle:{
+        fontSize: 20,
+        fontFamily: 'League Spartan',
+        fontWeight: '500',
+        color: colors.white,
+        alignSelf: 'center',
+       
+       
     },
     text:{
         fontSize: 20,

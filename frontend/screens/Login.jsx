@@ -49,7 +49,7 @@ const Login = ({ navigation }) => {
                     <Image style={styles.logo} source={LOGO} />
                     <Text style={styles.pageName}>Login</Text>
 
-                    <TextInput value={email} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
+                    <TextInput value={email} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text.trim())} />
                     <TextInput secureTextEntry={true} value={password} placeholderTextColor={colors.greyText} style={styles.input} placeholder="Password" autoCapitalize="none" onChangeText={(text) => setPassword(text)} />
 
                     <View style={styles.buttonView}>
