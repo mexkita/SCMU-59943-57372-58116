@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const { db } = require("../firebase_config");
-const { collection, addDoc } = require('firebase/firestore');
 const { FieldValue } = require("firebase-admin/firestore");
 
 function millisToTime(millis) {
@@ -13,9 +12,9 @@ function millisToTime(millis) {
 }
 
 const createUserSchema = Joi.object({
-  username: Joi.string().required(),
-  email: Joi.string().required(),
-  profile_pic: Joi.string(),
+  userId: Joi.string().required(),
+  name: Joi.string().required(),
+  email: Joi.string().required()
 });
 
 exports.createUser = async (req, res) => {
@@ -25,8 +24,12 @@ exports.createUser = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    const data = req.body;
-    const userRef = await db.collection('users').add(data);
+    const data = {
+      name: req.body.name,
+      email: req.body.email
+    };
+
+    const userRef = await db.collection('users').doc(req.body.userId).set(data);
 
     res.status(201).json(userRef.id);
   } catch (error) {

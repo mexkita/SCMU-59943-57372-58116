@@ -26,6 +26,7 @@ async function checkAuth(req, res, next) {
         return res.status(401).send('Unauthorized');
 
     }
+
 }
 
 module.exports = checkAuth;

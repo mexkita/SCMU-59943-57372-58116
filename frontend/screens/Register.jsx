@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import CustomButton from '../components/CustomButton';
 import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
+import { usersApi } from '../api';
 
 const Register = ({ navigation }) => {
 
@@ -19,6 +20,8 @@ const Register = ({ navigation }) => {
         try {
             const response = await createUserWithEmailAndPassword(auth, email, password);
             console.log(response);
+            const user = { userId: response.user.uid, name, email }
+            const response2 = await usersApi.createUser(user)
             alert("Account Created!")
         } catch (error) {
             console.log(error);

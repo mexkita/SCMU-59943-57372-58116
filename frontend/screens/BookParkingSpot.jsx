@@ -8,11 +8,13 @@ import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
 import { Picker } from '@react-native-picker/picker';
 import { parkApi } from "../api";
+import { useAuth } from "../AuthProvider";
 
 const BookParkingSpot = ({ route }) => {
     const navigation = useNavigation();
     const { park } = route.params || {};
-    const userId = 'mjNzCmIyvmGsu2AxY8Ol';
+    const { user } = useAuth();
+    console.log("USER ", user)
     const [parkingLots, setParkingLots] = useState([])
 
     /* [
@@ -128,9 +130,11 @@ const BookParkingSpot = ({ route }) => {
     const bookSpot = async () => {
 
         try {
-            await parkApi.addBooking(selectedParkId, userId, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() })
+            await parkApi.addBooking(selectedParkId, user, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() })
+            alert("Spot Booked!");
         } catch (error) {
             console.log("[" + error.response.status + "] " + error.response.data.message)
+            alert(error.response.data.message)
         }
 
     }
