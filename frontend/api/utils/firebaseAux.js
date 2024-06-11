@@ -21,8 +21,10 @@ export const request = async (method, url, data) => {
   const token = await getToken();
   //console.log('Token:', token);
   const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
+    Authorization: `Bearer ${token}`
   };
+
+  console.log(url)
+
   return axios({ method, url, data, headers });
 };

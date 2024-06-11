@@ -12,12 +12,7 @@ import { parkApi } from "../api";
 const BookParkingSpot = ({ route }) => {
     const navigation = useNavigation();
     const { park } = route.params || {};
-
-    const userId = 'agag';
-
-    console.log("Park from param ", park)
-
-    //TODO: GET parking lots
+    const userId = 'mjNzCmIyvmGsu2AxY8Ol';
     const [parkingLots, setParkingLots] = useState([])
 
     /* [
@@ -131,8 +126,12 @@ const BookParkingSpot = ({ route }) => {
     };
 
     const bookSpot = async () => {
-        console.log("Button pressed -- Add booking ", selectedParkId, userId, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() });
-        await parkApi.addBooking(selectedParkId, userId, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() })
+
+        try {
+            await parkApi.addBooking(selectedParkId, userId, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() })
+        } catch (error) {
+            console.log("[" + error.response.status + "] " + error.response.data.message)
+        }
 
     }
 
