@@ -7,24 +7,23 @@ import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
 import { useState } from "react";
+import { useAuth } from "../AuthProvider";
 
 
 const Home = () => {
 
     const navigation = useNavigation();
 
-    const [user, setUser] = useState({ userId: '00', name: 'Jack' })
+    const { user } = useAuth()
 
 
     const startParking = () => {
         navigation.navigate('NFCTicket');
-
     }
 
     const handleNavigation = (pageName) => {
         navigation.navigate(pageName);
     }
-
 
 
     return (

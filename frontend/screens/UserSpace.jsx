@@ -2,41 +2,46 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../assets/colors/colors";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
+import { useAuth } from "../AuthProvider";
+import { useNavigation } from "@react-navigation/native";
 
 
 const UserSpace = () => {
 
+    const { user, logout } = useAuth()
+    const navigation = useNavigation();
 
-   const  handleLogout = () =>{
-
+    const handleLogout = async () => {
+        navigation.navigate("Login")
+        await logout()
     }
 
-return(
-    <SafeAreaView style={styles.container}>
-        <Header/>
-        <View style={styles.titleContainer}>
-            <Text style={styles.title}>My page</Text>
-        </View>
-        <View style={styles.titleContainer}>
-            <View style={styles.info}>
-            <Text style={styles.infoTitle}>Name:</Text>
-            <Text style={styles.infoText}>{'eafg'}</Text>
+    return (
+        <SafeAreaView style={styles.container}>
+            <Header />
+            <View style={styles.titleContainer}>
+                <Text style={styles.title}>My page</Text>
+            </View>
+            <View style={styles.titleContainer}>
+                <View style={styles.info}>
+                    <Text style={styles.infoTitle}>Name:</Text>
+                    <Text style={styles.infoText}>{user.name}</Text>
+
+                </View>
+                <View style={styles.info}>
+                    <Text style={styles.infoTitle}>Email:</Text>
+                    <Text style={styles.infoText}>{user.email}</Text>
+                </View>
 
             </View>
-            <View style={styles.info}>
-            <Text style={styles.infoTitle}>Email:</Text>
-            <Text style={styles.infoText}>{'eafg'}</Text>
+
+
+            <View style={styles.buttonContainer}>
+                <CustomButton title={'Logout'} color={colors.orange} onPressFunction={handleLogout} />
             </View>
 
-        </View>
-
-
-        <View style={styles.buttonContainer}>
-        <CustomButton title={'Logout'} color={colors.orange} onPressFunction={handleLogout}/>
-        </View>
-        
-    </SafeAreaView>
-)
+        </SafeAreaView>
+    )
 
 
 }
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
 
     container: {
         backgroundColor: colors.background,
-        paddingHorizontal:30,
+        paddingHorizontal: 30,
         flex: 1,
         paddingTop: 40,
     },
@@ -60,33 +65,33 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
 
     },
-    titleContainer:{
+    titleContainer: {
         marginTop: 20,
 
     },
-    buttonContainer:{
+    buttonContainer: {
         marginTop: 40,
 
     },
-    info:{
+    info: {
 
         flexDirection: 'row',
-        marginBottom:10
+        marginBottom: 10
 
     },
-    infoTitle:{
+    infoTitle: {
         fontSize: 20,
         fontFamily: 'League Spartan',
         fontWeight: '700',
         color: colors.white,
         paddingRight: 10
-       
+
     },
-    infoText:{
+    infoText: {
         fontSize: 20,
         fontFamily: 'League Spartan',
         fontWeight: '500',
         color: colors.white,
-       
+
     }
 })

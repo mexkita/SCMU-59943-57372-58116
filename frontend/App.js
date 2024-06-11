@@ -13,7 +13,7 @@ import SearchParking from './screens/SearchParking';
 import Help from './screens/Help';
 import Checkout from './screens/Checkout';
 import UserSpace from './screens/UserSpace';
-import { AuthProvider, useAuth } from './AuthProvider';
+import { AuthProvider } from './AuthProvider';
 
 const Stack = createNativeStackNavigator();
 

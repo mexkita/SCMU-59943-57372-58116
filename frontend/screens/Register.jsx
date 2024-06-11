@@ -6,6 +6,7 @@ import CustomButton from '../components/CustomButton';
 import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
 import { usersApi } from '../api';
+import { useAuth } from '../AuthProvider';
 
 const Register = ({ navigation }) => {
 
@@ -13,12 +14,12 @@ const Register = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const auth = FIREBASE_AUTH;
+    const { register } = useAuth()
 
     const signUp = async () => {
         setLoading(true);
         try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const response = await register(name, email, password)
             console.log(response);
             const user = { userId: response.user.uid, name, email }
             const response2 = await usersApi.createUser(user)
