@@ -6,14 +6,17 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
 import { BookingsCard } from "../components/BookingsCard";
 import { HomeButtons } from "../components/HomeButtons";
+import { useState } from "react";
 
 
 const Home = () => {
 
     const navigation = useNavigation();
 
+    const [user, setUser] = useState({ userId: '00', name: 'Jack' })
 
-    const startParking = () => { 
+
+    const startParking = () => {
         navigation.navigate('NFCTicket');
 
     }
@@ -24,14 +27,12 @@ const Home = () => {
 
 
 
-
-
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Header />
                 <View style={styles.titleContainer}>
-                    <Text style={styles.menuTitle}>Hello Jack</Text>
+                    <Text style={styles.menuTitle}>Hello {user.name}</Text>
                     <FontAwesome5 name="car" size={50} color={colors.white} />
                 </View>
                 <View style={styles.menuContainer}>

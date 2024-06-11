@@ -83,8 +83,8 @@ exports.availableSpots = async (req, res) => {
 };
 
 const bookSpotSchema = Joi.object({
-    start_date: Joi.date().required(),
-    end_date: Joi.date().required()
+    startDate: Joi.date().required(),
+    endDate: Joi.date().required()
 });
 
 exports.bookSpot = async (req, res) => {
@@ -126,10 +126,12 @@ exports.bookSpot = async (req, res) => {
         }
 
         let reservation_data = {
-            start_date: data.start_date,
-            end_date: data.end_date,
+            start_date: data.startDate,
+            end_date: data.endDate,
             parkId: req.params.parkId
         }
+
+        console.log("Reservation Data: ", reservation_data)
 
         await userRef.update({ reservation: reservation_data });
 

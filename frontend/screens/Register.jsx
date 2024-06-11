@@ -2,7 +2,7 @@ import { View, Text, Image, StyleSheet, TextInput, ActivityIndicator, KeyboardAv
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import CustomButton  from '../components/CustomButton';
+import CustomButton from '../components/CustomButton';
 import LOGO from '../assets/logo.png';
 import colors from '../assets/colors/colors';
 
@@ -33,7 +33,7 @@ const Register = ({ navigation }) => {
             <KeyboardAvoidingView behavior='padding' style={styles.keyboardAvoidingView}>
                 <ScrollView style={styles.scrollView}>
                     <Image style={styles.logo} source={LOGO} />
-                    <Text style={styles.pageName}>Sing Up</Text>
+                    <Text style={styles.pageName}>Sign Up</Text>
 
                     <TextInput value={name} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Name" autoCapitalize="none" onChangeText={(text) => setName(text)} />
                     <TextInput value={email} style={styles.input} placeholderTextColor={colors.greyText} placeholder="Email" autoCapitalize="none" onChangeText={(text) => setEmail(text)} />
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 120,
         marginTop: 50,
-       
+
     },
     pageName: {
         fontSize: 40,
