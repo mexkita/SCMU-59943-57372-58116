@@ -154,41 +154,21 @@ function NFCTicket() {
     }, [])
 
 async function readNfc() {
-    let mifarePages = [];
-  
     try {
-      // STEP 1
-      
-      let reqMifare = await NfcManager.requestTechnology(
-        NfcTech.MifareUltralight,
-      );
-  
-      console.log("STEP 1")
-      console.log(reqMifare)
-
-      const readLength = 60;
-      const mifarePagesRead = await Promise.all(
-        [...Array(readLength).keys()].map(async (_, i) => {
-          const pages = await NfcManager.mifareUltralightHandlerAndroid // STEP 2
-            .mifareUltralightReadPages(i * 4); // STEP 3
-          mifarePages.push(pages);
-        }),
-      );
-
-      console.log("STEP 2")
-      console.log(mifarePagesRead)
-      setIsRead(true);
-
-    } catch (ex) {
-      console.warn(ex);
-    } finally {
-      // STEP 4
-      NfcManager.cancelTechnologyRequest();
-      console.log("CANCEL")
+        // register for the NFC tag with NDEF in it
+        await NfcManager.requestTechnology(NfcTech.NfcA);
+        // the resolved tag object will contain `ndefMessage` property
+        const tag = await NfcManager.getTag();
+        console.warn('Tag found', tag);
+      } catch (ex) {
+        console.warn('Oops!', ex);
+      } finally {
+        // stop the nfc scanning
+        NfcManager.cancelTechnologyRequest();
+      }
     }
-  
-    return mifarePages;
-  }
+
+    
 
     return(
         <SafeAreaView style={styles.container}>
@@ -207,6 +187,10 @@ async function readNfc() {
                 <MaterialCommunityIcons name="nfc" size={24} color={colors.white} style={{paddingRight: 10,}}/>
                 <Text style={styles.ticketText}>Hold to reader</Text>
             </View>
+
+            <TouchableOpacity onPress={readNfc}>
+        <Text>Scan a Tag</Text>
+      </TouchableOpacity>
 
 
         </SafeAreaView>
