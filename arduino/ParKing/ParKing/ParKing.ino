@@ -15,6 +15,9 @@
 // LCD Display pins
 #define SDA 33
 #define SCL 32
+int freeSpots = -1;
+unsigned long lastGetFreeSpotsTime = 0;
+const unsigned long getFreeSpotsInterval = 5000; // 5 seconds
 
 // Instantiate I2C LCD1602 screen
 LiquidCrystal_I2C lcd(0x3F,16,2);
@@ -32,8 +35,8 @@ const byte ledPins[] = {25, 26, 27}; // define red, green, blue led pins
 #define RGBDistanceTrigger 50.0
 
 // ENDPOINTS for backend requests
-// const String ENTRANCE_OR_EXIT_PARK_URL = String("http://192.168.1.11:8080/api/park/") + THIS_PARK_ID; //http://localhost:8080/api/park/{parkId}
-const String GET_PARK_FREE_SPOTS = String("http://192.168.1.11:8080/api/park/available_spots/") + THIS_PARK_ID;
+// const String ENTRANCE_OR_EXIT_PARK_URL = String("http://192.168.1.8:8080/api/park/") + THIS_PARK_ID; //http://localhost:8080/api/park/{parkId}
+const String GET_PARK_FREE_SPOTS = String("http://192.168.1.8:8080/api/park/available_spots/") + THIS_PARK_ID;
 
 // used for json bodies
 // char jsonOutput[128];
@@ -78,15 +81,16 @@ void loop()
 
   if(WiFi.status() == WL_CONNECTED)
   {
+    unsigned long currentMillis = millis();
     //entranceAndExitParkMethod("normal", false);
-    handleGetFreeSpots();
+    handleGetFreeSpots(currentMillis);
   }
   else
   {
     Serial.println("Connection lost");
   }
 
-  delay(5000);
+  delay(500);
 
   getSonarDistance();
 
@@ -100,7 +104,7 @@ void lcdSetup() {
   lcd.setCursor(0,0);             // Move the cursor to row 0, column 0
   lcd.print("Free Spots:");
   lcd.setCursor(0,1);
-  lcd.print(50); //get value from backend
+  lcd.print(freeSpots); //get value from backend
 }
 
 void getSonarDistance() {
@@ -137,14 +141,23 @@ void setRGBLedColor() {
   }
 }
 
-void handleGetFreeSpots() {
-  HTTPClient client;
-  client.begin(GET_PARK_FREE_SPOTS);
-  int httpCode = client.GET();
+void handleGetFreeSpots(unsigned long currentMillis) {
+  if (currentMillis - lastGetFreeSpotsTime >= getFreeSpotsInterval) {
+      lastGetFreeSpotsTime = currentMillis;
 
-  if (httpCode > 0) {
-    String payload = client.getString();
-    Serial.println("\nStatusCode: " + String(httpCode));
-    Serial.println(payload);
-  }
+      HTTPClient client;
+      client.begin(GET_PARK_FREE_SPOTS);
+      int httpCode = client.GET();
+      Serial.println("\nStatusCode: " + String(httpCode));
+
+      if (httpCode > 0) {
+        String payload = client.getString();
+        Serial.println(payload);
+
+        // update freeSpots 
+        freeSpots++;
+        lcd.setCursor(0,1);
+        lcd.print(freeSpots);
+      }
+    }
 }
