@@ -11,7 +11,7 @@ router.put(parkAPI + "/:idU", authMiddleware, park.updateSpotStatus);
 
 router.get(parkAPI, authMiddleware, park.getAll);
 
-router.get(parkAPI + "/available_spots/:parkId", authMiddleware, park.availableSpots);
+router.get(parkAPI + "/available_spots/:parkId", park.availableSpots);
 
 router.post(parkAPI + "/book_spot/:parkId/users/:userId", authMiddleware, park.bookSpot);
 
