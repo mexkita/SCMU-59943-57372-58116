@@ -13,6 +13,7 @@ import SearchParking from './screens/SearchParking';
 import Help from './screens/Help';
 import Checkout from './screens/Checkout';
 import UserSpace from './screens/UserSpace';
+import { AuthProvider } from './AuthProvider';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,9 @@ function InsideLayout() {
       <InsideStack.Screen name="Help" component={Help} options={{ headerShown: false }} />
       <InsideStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
       <InsideStack.Screen name="UserSpace" component={UserSpace} options={{ headerShown: false }} />
+
+
+
     </InsideStack.Navigator>
   )
 
@@ -40,6 +44,7 @@ export default function App() {
     'League Spartan-SemiBold': require("./assets/fonts/League_Spartan/LeagueSpartan-SemiBold.ttf"),
   });
 
+
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       console.log('user', user);
@@ -47,21 +52,21 @@ export default function App() {
     })
   }, []);
 
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        {user ? (
-          <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown: false }} />
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-
-
-
-          </>
-        )}
-      </Stack.Navigator>
+      <AuthProvider>
+        <Stack.Navigator initialRouteName="Login">
+          {user ? (
+            <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown: false }} />
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+            </>
+          )}
+        </Stack.Navigator>
+      </AuthProvider>
     </NavigationContainer>
   );
 }

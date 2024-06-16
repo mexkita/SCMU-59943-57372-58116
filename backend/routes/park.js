@@ -7,13 +7,15 @@ const park = require("../controllers/park");
 
 const parkAPI = "/park";
 
-router.put(parkAPI + "/:idU", park.updateSpotStatus);
+router.put(parkAPI + "/:idU", authMiddleware, park.updateSpotStatus);
 
-router.get(parkAPI, park.getAll);
+router.get(parkAPI, authMiddleware, park.getAll);
 
-router.get(parkAPI + "/available_spots/:parkId", park.availableSpots);
+router.get(parkAPI + "/available_spots/:parkId", authMiddleware, park.availableSpots);
 
-router.get(parkAPI + "/book_spot/:parkId/users/:userId", park.bookSpot);
+router.post(parkAPI + "/book_spot/:parkId/users/:userId", authMiddleware, park.bookSpot);
+
+router.post(parkAPI + "/report/:parkId", authMiddleware, park.createReport);
 
 
 

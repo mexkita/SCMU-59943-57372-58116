@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import colors from '../assets/colors/colors';
 import Header from "../components/Header";
@@ -7,34 +7,57 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import InputPicker from '../components/InputPicker';
 import CustomButton from '../components/CustomButton';
 import { Picker } from '@react-native-picker/picker';
+import { parkApi } from "../api";
+import { useAuth } from "../AuthProvider";
 
-const BookParkingSpot = ({route}) => {
+const BookParkingSpot = ({ route }) => {
     const navigation = useNavigation();
-    const {park} = route.params || {};
+    const { park } = route.params || {};
+    const { user } = useAuth();
+    const [parkingLots, setParkingLots] = useState([]);
 
-  
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [selectedParkingLot, setParkingLot] = useState(park ? park.title: '');
+    const [reservation, setReservation] = useState({ startDate: new Date(), endDate: new Date() })
+    const [selectedParkId, setSelectedParkId] = useState(park ? park.parkId : '');
+
+
+    useEffect(() => {
+        getAllParkings();
+    }, []);
+
+    const getAllParkings = async () => {
+
+        try {
+            const parkingLots = await parkApi.getAllParks()
+            setParkingLots(parkingLots)
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
+
+    const handleSelectPark = (parkId, itemIndex) => {
+        console.log("Selected Park ", parkId)
+        setSelectedParkId(parkId)
+    }
 
 
     const onChangeStartDate = (event, selectedDate) => {
-        const currentDate = selectedDate || startDate;
-        setStartDate(currentDate);
-        if (selectedDate > endDate || !endDate)
-            setEndDate(currentDate);
+        const currentDate = selectedDate || reservation.startDate;
+        setReservation({ ...reservation, startDate: currentDate });
+        if (selectedDate > reservation.endDate || !reservation.endDate)
+            setReservation({ ...reservation, startDate: currentDate });
     };
 
     const onChangeEndDate = (event, selectedDate) => {
-        const currentDate = selectedDate || endDate; // Updated
-        if (selectedDate >= startDate || !startDate) // Updated condition
-            setEndDate(currentDate);
+        const currentDate = selectedDate || reservation.endDate; // Updated
+        if (selectedDate >= reservation.startDate || !reservation.startDate) // Updated condition
+            setReservation({ ...reservation, endDate: currentDate });
     };
 
     const showMode = (currentMode, isStart) => {
         if (isStart) {
             DateTimePickerAndroid.open({
-                value: startDate,
+                value: reservation.startDate,
                 onChangeStartDate,
                 mode: currentMode,
                 is24Hour: true,
@@ -42,7 +65,7 @@ const BookParkingSpot = ({route}) => {
             });
         } else {
             DateTimePickerAndroid.open({
-                value: endDate,
+                value: reservation.endDate,
                 onChangeEndDate,
                 mode: currentMode,
                 is24Hour: true,
@@ -53,15 +76,14 @@ const BookParkingSpot = ({route}) => {
     };
 
     const handleChangeDate = (event, selectedDate) => {
-        const currentDate = selectedDate || startDate;
-        setStartDate(currentDate);
-        setEndDate(currentDate);
+        const currentDate = selectedDate || reservation.startDate;
+        setReservation({ ...reservation, startDate: currentDate, endDate: currentDate });
     }
 
     const showDatepicker = () => {
         const mode = 'date';
         DateTimePickerAndroid.open({
-            value: startDate,
+            value: reservation.startDate,
             onChange: handleChangeDate,
             mode,
             is24Hour: true,
@@ -72,7 +94,7 @@ const BookParkingSpot = ({route}) => {
     const showTimepicker = (isStart) => {
         const mode = 'time';
         const callback = isStart ? onChangeStartDate : onChangeEndDate;
-        const value = isStart ? startDate : endDate;
+        const value = isStart ? reservation.startDate : reservation.endDate;
         DateTimePickerAndroid.open({
             value,
             onChange: callback,
@@ -82,35 +104,21 @@ const BookParkingSpot = ({route}) => {
         });
     };
 
-    const printDatesDebug = () => {
-        console.log("------------- start date: " + startDate);
-        console.log("------------- end date: " + endDate);
+    const bookSpot = async () => {
+
+        try {
+            await parkApi.addBooking(selectedParkId, user.id, { startDate: reservation.startDate.toISOString(), endDate: reservation.endDate.toISOString() })
+            alert("Spot Booked!");
+        } catch (error) {
+            console.log("[" + error.response.status + "] " + error.response.data.message)
+            alert(error.response.data.message)
+        }
+
     }
 
 
-    
-    const parkingLots = [
-        {
-            id: 0,
-            latitude: 38.72249845287284,
-            longitude: -9.137780372648901 ,
-            title: 'Parking Lot x',
-            totalSlots: 200,
-            availableSlots: 100,
-            pricePerHour: '0.5'
 
-        },
-        {
-            id: 1,
-            latitude: 38.66192985095062, 
-            longitude: -9.205607571001307 ,
-            title: 'Parking Lot FCT',
-            totalSlots: 200,
-            availableSlots: 150,
-            pricePerHour: '0.7'
 
-        }
-    ]
 
     return (
         <SafeAreaView style={styles.container}>
@@ -121,36 +129,26 @@ const BookParkingSpot = ({route}) => {
                     <Text style={styles.parkingLotTitle}>Parking Lot</Text>
                     <View style={styles.parkingLotPickerView}>
                         <Picker
-                            selectedValue={selectedParkingLot}
+                            selectedValue={selectedParkId}
                             style={styles.parkingLotPicker}
                             dropdownIconColor={colors.greyText}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setParkingLot(itemValue)
-                            }>
-                               
-                            {/* TODOOOOO list parking lots from backend */
+                            onValueChange={handleSelectPark}>
 
-                          
-                            parkingLots.map((park) =>(
-                                
-                                <Picker.Item key={park.id} label={park.title} value={park.title} />
-                                
-
+                            {parkingLots && parkingLots.map((park) => (
+                                <Picker.Item key={park.parkId} label={park.title} value={park.parkId} />
                             ))
-                            
                             }
-                           
+
                         </Picker>
                     </View>
 
-                    <InputPicker title="Date" auxFunction={showDatepicker} date={startDate} />
+                    <InputPicker title="Date" auxFunction={showDatepicker} date={reservation.startDate} />
                     <View style={styles.startAndEndTimeView}>
-                        <InputPicker title="Start Time" auxFunction={() => showTimepicker(true)} date={startDate} />
-                        <InputPicker title="End Time" auxFunction={() => showTimepicker(false)} date={endDate} />
+                        <InputPicker title="Start Time" auxFunction={() => showTimepicker(true)} date={reservation.startDate} />
+                        <InputPicker title="End Time" auxFunction={() => showTimepicker(false)} date={reservation.endDate} />
                     </View>
                     <View style={styles.bookButtonView}>
-                        {/* TODOOOOO connect to firebase */}
-                        <CustomButton title="Book Spot" onPressFunction={printDatesDebug} color={colors.orange} />
+                        <CustomButton title="Book Spot" onPressFunction={bookSpot} color={colors.orange} />
                     </View>
                 </View>
             </ScrollView>

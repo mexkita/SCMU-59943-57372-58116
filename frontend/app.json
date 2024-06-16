@@ -32,7 +32,9 @@
             "./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf"
           ]
         }
-      ]
+
+      ],
+      "react-native-nfc-manager"
     ]
   }
 }

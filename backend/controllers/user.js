@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const { db } = require("../firebase_config");
-const { collection, addDoc } = require('firebase/firestore');
 const { FieldValue } = require("firebase-admin/firestore");
 
 function millisToTime(millis) {
@@ -13,9 +12,9 @@ function millisToTime(millis) {
 }
 
 const createUserSchema = Joi.object({
-  username: Joi.string().required(),
-  email: Joi.string().required(),
-  profile_pic: Joi.string(),
+  userId: Joi.string().required(),
+  name: Joi.string().required(),
+  email: Joi.string().required()
 });
 
 exports.createUser = async (req, res) => {
@@ -25,8 +24,12 @@ exports.createUser = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    const data = req.body;
-    const userRef = await db.collection('users').add(data);
+    const data = {
+      name: req.body.name,
+      email: req.body.email
+    };
+
+    const userRef = await db.collection('users').doc(req.body.userId).set(data);
 
     res.status(201).json(userRef.id);
   } catch (error) {
@@ -283,6 +286,46 @@ exports.startStay = async (req, res) => {
 
 
     res.status(200).json({ message: "Stay started!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.getElapsed = async (req, res) => {
+  try {
+    //Validate the request params
+    const { paramError } = Joi.string().validate(req.params.userId);
+
+    if (paramError) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const userId = req.params.userId;
+    const userRef = db.collection('users').doc(userId);
+    const user = await userRef.get();
+
+    if (!user.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.data().current_stay == undefined) {
+      return res.status(409).json({ message: "User does not have a stay!" })
+    }
+
+    const current_stay_data = user.data().current_stay;
+
+    const start_time = new Date(Date.parse(current_stay_data.start_date));
+
+    const elapsedTime = Date.now() - start_time;
+
+    const formattedElapsed = millisToTime(elapsedTime);
+
+    let response = {
+      elapsed: formattedElapsed
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

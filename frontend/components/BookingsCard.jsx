@@ -6,9 +6,12 @@ import { Divider } from 'react-native-elements';
 
 
 export const BookingsCard = ({ parkingLot, date, hour, onPressFunction }) => {
+
+
+
     return(
     <TouchableOpacity
-        onPress={'onPressFunction'}
+        onPress={onPressFunction}
         style={({ ...styles.button, backgroundColor: colors.grey })  }
     >
        <View style={styles.contentLeft}>
@@ -16,11 +19,11 @@ export const BookingsCard = ({ parkingLot, date, hour, onPressFunction }) => {
             <Divider orientation="vertical" width={1} inset={false} color={colors.greyText}/>
        </View>
        <View style={styles.contentMiddle}>
-            <Text style={styles.buttonText }>{'Parking Lot y'}</Text>
-            <Text style={styles.buttonText }>{'15/05/2024'}</Text>
+            <Text style={styles.buttonText }>{parkingLot}</Text>
+            <Text style={styles.buttonText }>{date}</Text>
        </View>
        <View style={styles.contentRight}>
-        <Text style={styles.buttonText }>{'12h30'}</Text>
+        <Text style={styles.buttonText }>{hour}</Text>
        </View>
       
         
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
         height: 115,
         justifyContent: 'flex-end',
         paddingBottom: 10,
-        paddingEnd: 10
+        paddingEnd: 15
     },
   
 
