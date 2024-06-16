@@ -3,35 +3,40 @@
 #include <ArduinoJson.h>
 #include <LiquidCrystal_I2C.h> // LCD library
 #include <Wire.h> 
+#include <ESP32Servo.h>
+
+// we're assumming that our physical prototype has the following ID for every endpoint call we make
+#define THIS_PARK_ID "012345"
 
 // Carolina wifi
 #define WIFI_SSID "NOS-FE0D"
 #define WIFI_PASSWORD "6GSPUSQ2"
 
 // LCD Display pins
-#define SDA 13
-#define SCL 14
+#define SDA 33
+#define SCL 32
+
+// Instantiate I2C LCD1602 screen
+LiquidCrystal_I2C lcd(0x3F,16,2);
 
 // Proximity Ultrasonic Sensor 
-#define trigPin 12 // define trigPin
-#define echoPin 33 // define echoPin.
+#define trigPin 18 // digital pin
+#define echoPin 19 // digital pin
 #define MAX_DISTANCE 700 // Maximum sensor distance is rated at 400-500cm.
 float timeOut = MAX_DISTANCE * 60;
 int soundVelocity = 340; 
 float sonarResult;
 
 // RGB LED
-const byte ledPins[] = {15, 2, 4}; // define red, green, blue led pins
+const byte ledPins[] = {25, 26, 27}; // define red, green, blue led pins
 #define RGBDistanceTrigger 50.0
 
 // ENDPOINTS for backend requests
-#define ENTRANCE_OR_EXIT_PARK_URL "http://192.168.1.11:8080/api/park/012345" //http://localhost:8080/api/park/{parkId}
-
-// Instantiate I2C LCD1602 screen
-LiquidCrystal_I2C lcd(0x3F,16,2); 
+// const String ENTRANCE_OR_EXIT_PARK_URL = String("http://192.168.1.11:8080/api/park/") + THIS_PARK_ID; //http://localhost:8080/api/park/{parkId}
+const String GET_PARK_FREE_SPOTS = String("http://192.168.1.11:8080/api/park/available_spots/") + THIS_PARK_ID;
 
 // used for json bodies
-char jsonOutput[128];
+// char jsonOutput[128];
 
 void setup() 
 {
@@ -41,8 +46,8 @@ void setup()
   lcdSetup();
 
   // Proximity Ultrasonic Sensor setup
-  pinMode(trigPin,OUTPUT);  // set trigPin to output mode
-  pinMode(echoPin,INPUT);   // set echoPin to input mode
+  pinMode(trigPin, OUTPUT);  // set trigPin to output mode
+  pinMode(echoPin, INPUT);   // set echoPin to input mode
 
   // RGB LED setup
   for (int i = 0; i < 3; i++) {       
@@ -65,26 +70,26 @@ void setup()
   Serial.println(WiFi.localIP());
   Serial.println();
 
-
+  Serial.println("setup complete");
 }
 
 void loop() 
 {
+
   if(WiFi.status() == WL_CONNECTED)
   {
     //entranceAndExitParkMethod("normal", false);
+    handleGetFreeSpots();
   }
   else
   {
     Serial.println("Connection lost");
   }
 
-  //delay(10000);
-
-  delay(500);
+  delay(5000);
 
   getSonarDistance();
-  
+
   setRGBLedColor();
 }
 
@@ -117,6 +122,7 @@ float getSonar() {
  // calculate the distance according to the time
  distance = (float)pingTime * soundVelocity / 2 / 10000;
  return distance; // return the distance value
+
 }
 
 void setRGBLedColor() {
@@ -131,35 +137,14 @@ void setRGBLedColor() {
   }
 }
 
-
-// PUT
-// path -> parkId  
-// body -> "spot_type" ("normal" or "reserved") and "status" (true for entrance, false for exit)
-void entranceAndExitParkMethod(String spotType, bool status) {
+void handleGetFreeSpots() {
   HTTPClient client;
+  client.begin(GET_PARK_FREE_SPOTS);
+  int httpCode = client.GET();
 
-    client.begin(ENTRANCE_OR_EXIT_PARK_URL); 
-    client.addHeader("Content-Type", "application/json");
-
-    const size_t CAPACITY = JSON_OBJECT_SIZE(2); // number of attributes in body
-    StaticJsonDocument<CAPACITY> doc;
-
-    JsonObject object = doc.to<JsonObject>();
-
-    object["spot_type"] = spotType;
-    object["status"] = status;
-    
-    serializeJson(doc, jsonOutput);
-    Serial.println(jsonOutput);
-
-    int httpCode = client.PUT(String(jsonOutput));
-
-    if(httpCode > 0) {
-      String payload = client.getString();
-      Serial.println("\nStatusCode: " + String(httpCode));
-      Serial.println(payload);
-    }
-    Serial.println(".");
-    Serial.println(httpCode);
+  if (httpCode > 0) {
+    String payload = client.getString();
+    Serial.println("\nStatusCode: " + String(httpCode));
+    Serial.println(payload);
+  }
 }
-
