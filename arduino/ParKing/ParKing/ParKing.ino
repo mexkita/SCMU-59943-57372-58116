@@ -50,7 +50,7 @@ bool servoActive = false;
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 MFRC522::MIFARE_Key key; 
 byte nuidPICC[4];   // Init array that will store new NUID 
-String scannedUserId = "";
+String scannedUserId = "zPTzVFDLOhVyKGJeu97h0At0Aq92";
 
 // ENDPOINTS for backend requests
 // const String ENTRANCE_OR_EXIT_PARK_URL = String("http://192.168.1.8:8080/api/park/") + THIS_PARK_ID; //http://localhost:8080/api/park/{parkId}
@@ -134,10 +134,11 @@ void loop()
   setRGBLedColor();
 
   // rotate servo (open the barrier) when scann is 200 and freeSpots > 0
-  // handleServo();
   // rotateServo();
 
   handleRFID();
+   
+  handleServo();
 }
 
 void lcdSetup() {
@@ -214,7 +215,7 @@ void handleServo() {
   if (servoActive) {
     unsigned long currentMillis = millis();
     if (currentMillis - servoStartTime >= 2000) { // Step 2: Wait 2 seconds
-      myservo.write(0); // Step 3: Rotate servo back to 0 degrees
+      myservo.write(90); // Step 3: Rotate servo back to 90 degrees
       servoActive = false; // End the servo cycle
     }
   }
@@ -243,6 +244,7 @@ void handleRFID() {
   ////////////////////////////////////////
   //////////////////////////////////////// rodar servo 
   /////////////////////////////////////////
+  handleStartParking();
 
   if (rfid.uid.uidByte[0] != nuidPICC[0] || 
     rfid.uid.uidByte[1] != nuidPICC[1] || 
@@ -342,7 +344,13 @@ void handleGetFreeSpots(unsigned long currentMillis) {
         DeserializationError error = deserializeJson(doc, payload);
 
         if (!error) {
-          freeSpots = doc["normal_spots"];
+          int newFreeSpotsValue = doc["normal_spots"];
+          if(freeSpots != -1 && newFreeSpotsValue > freeSpots){
+            servoActive = true;
+            servoStartTime = millis();
+            myservo.write(0);
+          }
+          freeSpots = newFreeSpotsValue;
           // Update freeSpots
           lcd.setCursor(0, 1);
           lcd.print(freeSpots);
@@ -356,8 +364,8 @@ void handleGetFreeSpots(unsigned long currentMillis) {
 
 void handleStartParking() {
   HTTPClient client;
-  String ENDPOINT_URL = START_PARKING + scannedUserId + "/parks/" + THIS_PARK_ID;
-  client.begin(ENDPOINT_URL);
+  //String ENDPOINT_URL = START_PARKING + scannedUserId + "/parks/" + THIS_PARK_ID;
+  client.begin("http://192.168.1.11:8080/api/users/start_stay/zPTzVFDLOhVyKGJeu97h0At0Aq92/parks/012345");
   int httpCode = client.POST("");
   Serial.println("\nStatusCode: " + String(httpCode));
 
@@ -370,8 +378,7 @@ void handleStartParking() {
     if (httpCode >= 200 && httpCode <= 250) {
       servoActive = true;
       servoStartTime = millis();
-      myservo.write(90);
-      handleServo();
+      myservo.write(0);
     }
   }
   else {

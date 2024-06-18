@@ -238,6 +238,8 @@ exports.finishStay = async (req, res) => {
       current_stay: FieldValue.delete()
     });
 
+    await parkRef.update({ free_spots: park.data().free_spots + 1 })
+
     res.status(200).json(response);
   } catch (error) {
     console.error(error);
@@ -285,6 +287,7 @@ exports.startStay = async (req, res) => {
 
     await userRef.update({ current_stay: response });
 
+    await parkRef.update({ free_spots: park.data().free_spots - 1 })
 
     res.status(200).json({ message: "Stay started!" });
   } catch (error) {
