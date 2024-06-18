@@ -28,6 +28,7 @@ exports.createUser = async (req, res) => {
       name: req.body.name,
       email: req.body.email
     };
+    console.log("entrou no register")
 
     const userRef = await db.collection('users').doc(req.body.userId).set(data);
 

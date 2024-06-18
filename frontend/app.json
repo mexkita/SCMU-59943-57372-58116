@@ -18,7 +18,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.NFC"
+      ],
+      "package": "com.parking.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,7 +36,6 @@
             "./assets/fonts/League_Spartan/LeagueSpartan-VariableFont_wght.ttf"
           ]
         }
-
       ],
       "react-native-nfc-manager"
     ]
