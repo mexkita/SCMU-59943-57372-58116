@@ -21,7 +21,7 @@ router.get(userAPI + "/reservation/:userId", authMiddleware, user.getUserReserva
 
 router.post(userAPI + "/finish_stay/:userId", authMiddleware, user.finishStay);
 
-router.post(userAPI + "/start_stay/:userId/parks/:parkId", authMiddleware, user.startStay);
+router.post(userAPI + "/start_stay/:userId/parks/:parkId", user.startStay);
 
 router.get(userAPI + "/elapsed/:userId", authMiddleware, user.getElapsed);
 
