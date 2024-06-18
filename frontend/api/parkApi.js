@@ -1,6 +1,7 @@
 import { request } from "./utils/firebaseAux"
 
-const baseUrl = "http://192.168.1.10:8080/api"
+//const baseUrl = "http://192.168.1.10:8080/api"
+const baseUrl = "http://192.168.163.82:8080/api"
 const parkApi = baseUrl + "/park"
 
 
