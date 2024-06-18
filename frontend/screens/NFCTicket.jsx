@@ -168,24 +168,40 @@ function NFCTicket() {
         }
     } */
 
-    async function writeNfc({ type, value }) {
+    async function writeNfc() {
         let result = false;
-
         try {
-            // STEP 1
+            // STEP 1: Request MifareClassic technology
             await NfcManager.requestTechnology(NfcTech.MifareClassic);
+            const mifareClassicHandler = NfcManager.getMifareClassicHandler();
 
-            const bytes = Ndef.encodeMessage([Ndef.textRecord('Hello NFC')]);
+            // STEP 2: Connect to MifareClassic card
+            await mifareClassicHandler.connect();
 
-            if (bytes) {
-                await NfcManager.ndefHandler // STEP 2
-                    .writeNdefMessage(bytes); // STEP 3
-                result = true;
-            }
+            // Example of authentication and writing to a block
+            // Note: You'll need the appropriate key for your MifareClassic card
+            const key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]; // Default key, change as needed
+            const sector = 1;
+            const block = 4;
+            const message = 'Hello Mesquita';
+            const encoder = new TextEncoder();
+            const encoded_message = encoder.encode(message);
+
+            const data = Array.from(encoded_message); // "Hello NFC Mifare" in bytes
+
+            // Authenticate the sector
+            await mifareClassicHandler.authenticateA(sector, key);
+
+            // Write data to the block
+            await mifareClassicHandler.writeBlock(block, data);
+            result = true;
         } catch (ex) {
             console.warn(ex);
+            if (ex instanceof NfcError && ex.type === NfcError.CANCEL) {
+                console.warn('Canceled by user');
+            }
         } finally {
-            // STEP 4
+            // STEP 4: Clean up
             NfcManager.cancelTechnologyRequest();
         }
 

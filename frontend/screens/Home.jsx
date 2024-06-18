@@ -17,12 +17,12 @@ const Home = () => {
 
     const { user } = useAuth()
 
-    const [reservation, setReservation]= useState({title: '', startDate: new Date()})
+    const [reservation, setReservation] = useState({ title: '', startDate: new Date() })
 
 
     const startParking = () => {
         navigation.navigate('NFCTicket');
-        startParkingRequest()
+        //startParkingRequest()
     }
 
     const startParkingRequest = async () => {
@@ -46,8 +46,8 @@ const Home = () => {
 
         try {
             const reservations = await usersApi.getReservationsByUser(user.id)
-            setReservation({title: reservations.title, startDate: new Date(reservations.start_date)});
-           console.log( reservation.startDate)
+            setReservation({ title: reservations.title, startDate: new Date(reservations.start_date) });
+            console.log(reservation.startDate)
         } catch (err) {
             console.log(err)
         }
@@ -89,11 +89,11 @@ const Home = () => {
                     <CustomButton title="Start Parking" onPressFunction={startParking} color={colors.orange} />
                     <View style={styles.menuContainer}>
                         <Text style={styles.menuSubtitle}>Bookings</Text>
-                        <BookingsCard 
-                        onPressFunction={handleReservedBook}
-                        parkingLot={reservation.title}
-                        date={formatDate(reservation.startDate)}
-                        hour={formatTime(reservation.startDate)}
+                        <BookingsCard
+                            onPressFunction={handleReservedBook}
+                            parkingLot={reservation.title}
+                            date={formatDate(reservation.startDate)}
+                            hour={formatTime(reservation.startDate)}
                         />
                     </View>
                     <View style={styles.menuContainer}>
